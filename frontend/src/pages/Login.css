@@ -1,0 +1,209 @@
+.scene {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    perspective: 1000px;
+    overflow: hidden;
+    position: relative;
+}
+
+.animated-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.tool-icon {
+    position: absolute;
+    color: rgba(40, 167, 69, 0.1);
+    animation: float 6s infinite;
+    font-size: 2rem;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-100px) rotate(180deg);
+    }
+}
+
+.container3d {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    transform-style: preserve-3d;
+    transition: transform 1.5s;
+    z-index: 1;
+}
+
+.container3d.flipped {
+    transform: rotateY(180deg);
+}
+
+.card3d {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.register-side {
+    transform: rotateY(180deg);
+}
+
+.content {
+    padding: 40px;
+}
+
+.title {
+    color: #28a745;
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.input-group3d {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-group3d input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: 0.3s;
+}
+
+.input-group3d span {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #999;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.input-group3d input:focus,
+.input-group3d input:valid {
+    border-color: #28a745;
+}
+
+.input-group3d input:focus ~ span,
+.input-group3d input:valid ~ span {
+    transform: translateY(-24px);
+    font-size: 0.8em;
+    color: #28a745;
+    background: #fff;
+    padding: 0 5px;
+}
+
+.user-type {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.user-type label {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.user-type label:hover {
+    border-color: #28a745;
+}
+
+.user-type input[type="radio"] {
+    display: none;
+}
+
+.user-type input[type="radio"]:checked + span {
+    color: #28a745;
+}
+
+.user-type input[type="radio"]:checked + span::before {
+    border-color: #28a745;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.links a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: 0.3s;
+}
+
+.links a:hover {
+    color: #28a745;
+}
+
+.btn3d {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(145deg, #28a745, #218838);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transform: translateY(0);
+    transition: 0.3s;
+}
+
+.btn3d:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+@media (max-width: 480px) {
+    .container3d {
+        width: 95%;
+        height: 580px;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+    
+    .title {
+        font-size: 1.5em;
+    }
+    
+    .user-type {
+        flex-direction: column;
+    }
+    
+    .user-type label {
+        margin: 5px 0;
+    }
+}

@@ -1,0 +1,64 @@
+{
+    "jobs": [
+      {
+        "id": 1,
+        "title": "Software Engineer",
+        "location": "New York, USA",
+        "type": "Full Time",
+        "salary": "$75,000 - $95,000",
+        "companyLogo": "assets/img/com-logo-1.jpg",
+        "companyName": "Tech Corp",
+        "featured": true,
+        "description": "We are looking for an experienced software engineer.",
+        "postedDate": "01 Jan, 2024"
+      },
+      {
+        "id": 2,
+        "title": "Marketing Manager",
+        "location": "London, UK",
+        "type": "Full Time",
+        "salary": "$65,000 - $85,000",
+        "companyLogo": "assets/img/com-logo-2.jpg",
+        "companyName": "Global Marketing",
+        "featured": true,
+        "description": "Join our dynamic marketing team.",
+        "postedDate": "02 Jan, 2024"
+      },
+      {
+        "id": 3,
+        "title": "Content Writer",
+        "location": "Remote",
+        "type": "Part Time",
+        "salary": "$30,000 - $45,000",
+        "companyLogo": "assets/img/com-logo-3.jpg",
+        "companyName": "Content Hub",
+        "featured": false,
+        "description": "Create engaging content for our platforms.",
+        "postedDate": "03 Jan, 2024"
+      },
+      {
+        "id": 4,
+        "title": "UI/UX Designer",
+        "location": "San Francisco, USA",
+        "type": "Full Time",
+        "salary": "$80,000 - $100,000",
+        "companyLogo": "assets/img/com-logo-4.jpg",
+        "companyName": "Design Studio",
+        "featured": true,
+        "description": "Design beautiful and functional interfaces.",
+        "postedDate": "04 Jan, 2024"
+      },
+      {
+        "id": 5,
+        "title": "Data Analyst",
+        "location": "Berlin, Germany",
+        "type": "Part Time",
+        "salary": "$40,000 - $60,000",
+        "companyLogo": "assets/img/com-logo-5.jpg",
+        "companyName": "Data Insights",
+        "featured": false,
+        "description": "Analyze and interpret complex data sets.",
+        "postedDate": "05 Jan, 2024"
+      }
+    ]
+  }

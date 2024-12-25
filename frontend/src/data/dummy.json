@@ -1,0 +1,17 @@
+{
+    "messages": [
+      {
+        "senderId": "hirer_id",
+        "receiverId": "job_seeker_id",
+        "message": "Hello, I’m interested in your job posting!",
+        "timestamp": "2024-12-23 14:30:00"
+      },
+      {
+        "senderId": "job_seeker_id",
+        "receiverId": "hirer_id",
+        "message": "Hello! How can I assist you with the job?",
+        "timestamp": "2024-12-23 14:32:00"
+      }
+    ]
+  }
+  
