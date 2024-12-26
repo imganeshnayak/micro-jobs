@@ -4,6 +4,7 @@ import Jobs from '../components/Jobs'
 import BreadCrumbs from '../components/BreadCrumbs';
 import Footer from '../components/Footer'
 
+import SerachBar from '../components/SerachBar'
 
 
 function JobList() {
@@ -15,6 +16,7 @@ function JobList() {
       <BreadCrumbs
       title="Jobs"
       />
+      <SerachBar/>
       <Jobs/>
     <Footer/>
 

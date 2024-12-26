@@ -11,7 +11,7 @@ function BreadCrumbs({ title }) {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb text-uppercase">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <a href="/">Home</a>
               </li>
               <li className="breadcrumb-item">
                 <a href="#">Pages</a>

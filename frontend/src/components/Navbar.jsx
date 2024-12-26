@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 
 function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) setIsLoggedIn(true);
+  }, []);
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
@@ -19,30 +28,50 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarCollapse">
           <div className="navbar-nav ms-auto p-4 p-lg-0">
             <Link to="/" className="nav-item nav-link">Home</Link>
-            <Link to="/about" className="nav-item nav-link">About</Link>
             <div className="nav-item dropdown">
               <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
               <div className="dropdown-menu rounded-0 m-0">
                 <Link to="/job-list" className="dropdown-item">Job List</Link>
-                <Link to="/job-category" className="dropdown-item">Job Category</Link>
+                <Link to="/job-category" className="dropdown-item">Job Detail</Link>
+                {/* ...existing dropdown items... */}
+              </div>
+            </div>
+            {isLoggedIn ? (
+              <div className="nav-item dropdown">
+                <a 
+                  href="#" 
+                  className="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                >
+                  <FaUser className="me-2" />
+                  Account
+                </a>
+                <div className="dropdown-menu rounded-0 m-0">
+                  <Link to="/user-panel" className="dropdown-item">Dashboard</Link>
+                  <a 
+                    href="#" 
+                    className="dropdown-item"
+                    onClick={() => {
+                      localStorage.removeItem('jwtToken');
+                      setIsLoggedIn(false);
+                    }}
+                  >
+                    Logout
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <Link to="/login" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
 
-              </div>
-            </div>
-            <div className="nav-item dropdown">
-              <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-              <div className="dropdown-menu rounded-0 m-0">
-                <Link to="/testimonial" className="dropdown-item">Testimonial</Link>
-                <Link to="/404" className="dropdown-item">404</Link>
-              </div>
-            </div>
-            <Link to="/contact" className="nav-item nav-link">Contact</Link>
+                Sign In<i className="fa fa-arrow-right ms-3"></i>
+              </Link>
+            )}
           </div>
-          <a
-            href=""
-            className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-          >
-            Post A Job<i className="fa fa-arrow-right ms-3"></i>
-          </a>
+          {isLoggedIn && (
+            <a href="" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+              Post A Job<i className="fa fa-arrow-right ms-3"></i>
+            </a>
+          )}
         </div>
       </nav>
     </div>
