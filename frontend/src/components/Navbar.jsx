@@ -4,7 +4,6 @@ import { FaUser } from "react-icons/fa";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
@@ -33,7 +32,6 @@ function Navbar() {
               <div className="dropdown-menu rounded-0 m-0">
                 <Link to="/job-list" className="dropdown-item">Job List</Link>
                 <Link to="/job-category" className="dropdown-item">Job Detail</Link>
-                {/* ...existing dropdown items... */}
               </div>
             </div>
             {isLoggedIn ? (
@@ -62,15 +60,17 @@ function Navbar() {
               </div>
             ) : (
               <Link to="/login" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
-
                 Sign In<i className="fa fa-arrow-right ms-3"></i>
               </Link>
             )}
           </div>
           {isLoggedIn && (
-            <a href="" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+            <Link 
+              to="/post-job" 
+              className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
+            >
               Post A Job<i className="fa fa-arrow-right ms-3"></i>
-            </a>
+            </Link>
           )}
         </div>
       </nav>

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login3D = () => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -51,6 +52,18 @@ const Login3D = () => {
     }
   };
 
+  const handleLoginSuccess = (data) => {
+    localStorage.setItem('jwtToken', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    
+    const { state } = location;
+    if (state?.returnUrl) {
+      navigate(state.returnUrl);
+    } else {
+      navigate('/');
+    }
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     const { email, password } = formData;
@@ -65,16 +78,12 @@ const Login3D = () => {
         email,
         password,
       });
-      const { token, user } = response.data;
-      localStorage.setItem("jwtToken", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      toast.success("Login successful");
-      
-      // Redirect to user panel
-      setTimeout(() => {
-        navigate('/user-panel');
-      }, 1500); // Delay to show success message
-      
+      const token = response.data.token;
+
+      // Set cookie
+      Cookies.set('token', token, { expires: 1 });
+      toast.success('Login successful');
+      handleLoginSuccess({ token, user: response.data.user });
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }

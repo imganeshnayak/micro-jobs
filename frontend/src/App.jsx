@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
@@ -8,6 +8,8 @@ import JobCategory from "./pages/JobCategory";
 import Login from "./pages/Login";
 import Message from "./pages/Message";
 import UserPanel from './components/UserPanel/UserPanel';
+import PostJob from './pages/job/PostJob'; // Import PostJob
+
 
 
 
@@ -17,6 +19,11 @@ import UserPanel from './components/UserPanel/UserPanel';
 function App() {
   return (
     <Router>
+      <nav>
+        <Link to="/post-job">Post a Job</Link>
+        <Link to="/jobs">View Jobs</Link>
+        {/* Other links */}
+      </nav>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
@@ -27,6 +34,9 @@ function App() {
         <Route path="/job-detail" element={<JobDetail />} />
         <Route path="/message/:jobId" element={<Message />} />
         <Route path="/user-panel" element={<UserPanel />} />
+        <Route path="/post-job" element={<PostJob />} />
+        <Route path="/jobs" element={<JobList />} />
+
 
       </Routes>
     </Router>
