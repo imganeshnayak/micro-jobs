@@ -10,7 +10,8 @@ import Message from "./pages/Message";
 import UserPanel from './components/UserPanel/UserPanel';
 import PostJob from './pages/job/PostJob'; // Import PostJob
 
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 // Import CSS
@@ -18,12 +19,11 @@ import PostJob from './pages/job/PostJob'; // Import PostJob
 
 function App() {
   return (
+    <>
+          <ToastContainer />
+
     <Router>
-      <nav>
-        <Link to="/post-job">Post a Job</Link>
-        <Link to="/jobs">View Jobs</Link>
-        {/* Other links */}
-      </nav>
+   
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
@@ -31,15 +31,16 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/job-list" element={<JobList />} />
         <Route path="/job-category" element={<JobCategory />} />
-        <Route path="/job-detail" element={<JobDetail />} />
         <Route path="/message/:jobId" element={<Message />} />
         <Route path="/user-panel" element={<UserPanel />} />
         <Route path="/post-job" element={<PostJob />} />
         <Route path="/jobs" element={<JobList />} />
+        <Route path="/job-details/:jobId" element={<JobDetail />} />
 
 
       </Routes>
     </Router>
+    </>
   );
 }
 

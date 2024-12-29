@@ -13,8 +13,12 @@ function Navbar() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <Link to="/" className="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
-          <h1 className="m-0 text-primary">DooQ</h1>
+        <Link to="/" className="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-3">
+          <img 
+            src="assets/img/logo.png" 
+            alt="Logo" 
+            style={{ width: '250px', height: 'auto' }}  // Adjust the width as needed
+          />
         </Link>
         <button
           type="button"

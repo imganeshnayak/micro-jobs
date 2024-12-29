@@ -1,0 +1,40 @@
+.loading-spinner {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .job-card {
+    background-color: #f8f9fa;
+    transition: transform 0.3s ease;
+    border: 1px solid #eee;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+  }
+  
+  .job-title {
+    font-size: 1.25rem;
+    color: #0d6efd;
+  }
+  
+  .job-description {
+    color: #6c757d;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .text-secondary {
+    color: #6c757d;
+  }
+
+  .btn-outline-primary:hover .ms-2 {
+    transform: translateX(5px);
+    transition: transform 0.3s ease;
+  }
