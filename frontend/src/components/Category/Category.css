@@ -1,0 +1,27 @@
+.cat-item {
+    text-decoration: none;
+    display: block;
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .cat-item.glowing-border {
+    border: 2px solid transparent;
+    box-shadow: 0 0 0 rgba(0, 255, 0, 0.75);
+    transition: 0.3s;
+  }
+  
+  .cat-item.glowing-border:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.75), 0 0 40px rgba(0, 255, 0, 0.5);
+    border-color: rgba(0, 255, 0, 0.75);
+  }
+  
+  i {
+    transition: color 0.3s ease;
+  }
+  
+  .cat-item:hover i {
+    color: #00ff00;
+  }
+  

@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import jobRoutes from './routes/jobs.js'; // Already in your server.js
+import searchRoutes from './routes/Search.js';
 
 
 
@@ -23,6 +24,8 @@ mongoose.connect('mongodb://localhost:27017/ganesh?tls=false', { useNewUrlParser
 // Routes
 app.use('/', authRoutes);
 app.use('/jobs', jobRoutes); // This line is correct; no need to change it
+app.use('/search', searchRoutes);
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 

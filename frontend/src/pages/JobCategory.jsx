@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer';
 import BreadCrumbs from '../components/BreadCrumbs';
-import Category from '../components/Category'
+import Category from '../components/Category/Category'
 
 
 

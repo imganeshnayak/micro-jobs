@@ -13,13 +13,24 @@ function Navbar() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <Link to="/" className="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-3">
+        {/* Logo */}
+        <Link 
+          to="/" 
+          className="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-0"
+        >
           <img 
             src="assets/img/logo.png" 
             alt="Logo" 
-            style={{ width: '250px', height: 'auto' }}  // Adjust the width as needed
+            style={{ 
+              width: '150px', // Default width
+              height: 'auto', 
+              maxWidth: '100%' // Responsive scaling for smaller screens
+            }} 
+            className="img-fluid" // Ensures responsiveness
           />
         </Link>
+
+        {/* Navbar Toggle Button */}
         <button
           type="button"
           className="navbar-toggler me-4"
@@ -28,6 +39,8 @@ function Navbar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
+        {/* Navbar Links */}
         <div className="collapse navbar-collapse" id="navbarCollapse">
           <div className="navbar-nav ms-auto p-4 p-lg-0">
             <Link to="/" className="nav-item nav-link">Home</Link>
@@ -63,7 +76,7 @@ function Navbar() {
                 </div>
               </div>
             ) : (
-              <Link to="/login" className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+              <Link to="/login" className="btn btn-primary rounded-0 py-2 px-4 ms-2">
                 Sign In<i className="fa fa-arrow-right ms-3"></i>
               </Link>
             )}
@@ -71,7 +84,7 @@ function Navbar() {
           {isLoggedIn && (
             <Link 
               to="/post-job" 
-              className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
+              className="btn btn-primary rounded-0 py-4 px-4 ms-2"
             >
               Post A Job<i className="fa fa-arrow-right ms-3"></i>
             </Link>
