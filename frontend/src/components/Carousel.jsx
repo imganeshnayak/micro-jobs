@@ -39,9 +39,7 @@ const Carousel = () => {
                   <a href="#" className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
                     Search A Job
                   </a>
-                  <a href="#" className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
-                    Find A Talent
-                  </a>
+                
                 </div>
               </div>
             </div>
@@ -63,10 +61,8 @@ const Carousel = () => {
                     Vero elitr justo clita lorem. Ipsum dolor at sed stet sit diam no.
                     Kasd rebum ipsum et diam justo clita et kasd rebum sea elitr.
                   </p>
-                  <a href="#" className="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
-                    Search A Job
-                  </a>
-                  <a href="#" className="btn btn-secondary py-md-3 px-md-5 animated slideInRight">
+               
+                  <a href="#" className="btn btn-primary py-md-3 px-md-5 animated slideInRight">
                     Find A Talent
                   </a>
                 </div>

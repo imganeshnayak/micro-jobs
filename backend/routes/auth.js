@@ -28,15 +28,23 @@ router.post('/register', async (req, res) => {
 
 // Login route
 router.post('/login', async (req, res) => {
+  console.log('Login request received:', req.body); // Log the request body
   const { email, password } = req.body;
 
   try {
+    // Find the user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
+    // Compare the provided password with the hashed password in the database
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
+    // Generate a JWT token
     const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
     res.json({ token });
   } catch (error) {
