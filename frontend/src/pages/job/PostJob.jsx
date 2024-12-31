@@ -6,13 +6,13 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import BreadCrumbs from '../../components/BreadCrumbs';
 import { FaBriefcase, FaBuilding, FaMapMarkerAlt, FaDollarSign, FaUser, FaEnvelope } from 'react-icons/fa';
-
+ 
 
 const PostJob = () => {
   const [jobData, setJobData] = useState({
     title: '',
     description: '',
-    company: '',
+    company: 'default',
     location: '',
     salary: '',
     pincode: '',
@@ -21,21 +21,27 @@ const PostJob = () => {
     category: '',
     email: '',
     jobType: 'Full-Time', // Default value for jobType
-  });
 
+  });
   const handleInputChange = (event) => {
+    const user = JSON.parse(localStorage.getItem('user')) // Corrected key for user
+    const userId = user ? user._id : ''; // If no user is logged in, use an empty string
+    
     const { name, value } = event.target;
     setJobData({
       ...jobData,
+      userId,  // Set userId from localStorage (or empty string if no user)
       [name]: value,
     });
   };
-
+  
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/jobs', jobData);
       toast.success(response.data.message); // Show success toast
+      
       // Reset the form
       setJobData({
         title: '',
@@ -49,6 +55,7 @@ const PostJob = () => {
         category: '',
         email: '',
         jobType: 'Full-Time', // Reset to default value
+
       });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to post job'); // Show error toast

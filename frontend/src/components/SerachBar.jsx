@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FaMapMarkerAlt, FaBriefcase, FaDollarSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function SearchBar() {
   const [title, setTitle] = useState("");
@@ -7,6 +9,8 @@ function SearchBar() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // Initialize navigate
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -17,11 +21,12 @@ function SearchBar() {
       if (jobType !== "jobType") query.append("jobType", jobType);
       if (pinCode) query.append("pinCode", pinCode);
 
-      const response = await fetch(`http://localhost:5000/search/search?${query.toString()}`);
+      const response = await fetch(
+        `http://localhost:5000/search/search?${query.toString()}`
+      );
       if (!response.ok) throw new Error("Failed to fetch jobs");
 
       const jobs = await response.json();
-
       setFilteredJobs(jobs);
     } catch (err) {
       console.error("Error fetching jobs:", err);
@@ -35,13 +40,17 @@ function SearchBar() {
     fetchJobs();
   };
 
+  const handleViewDetails = (jobId) => {
+    navigate(`/job-details/${jobId}`); // Navigate to the JobDetail page
+  };
+
   return (
     <div>
       {/* Search Section */}
       <div
         className="container-fluid bg-primary mb-5 wow fadeIn"
         data-wow-delay="0.1s"
-        style={{ padding: "35px" }}
+        style={{ padding: "40px" }}
       >
         <div className="container">
           <div className="row g-2">
@@ -99,41 +108,35 @@ function SearchBar() {
         ) : error ? (
           <p className="text-danger">{error}</p>
         ) : filteredJobs.length > 0 ? (
-          filteredJobs.map((job) => (
-            <div key={job._id} className="card mb-3">
-              <div className="row g-0">
-                <div className="col-md-2">
-                  <img
-                    src={job.companyLogo}
-                    className="img-fluid rounded-start"
-                    alt={job.companyName}
-                  />
-                </div>
-                <div className="col-md-10">
-                  <div className="card-body">
-                    <h5 className="card-title">{job.title}</h5>
-                    <p className="card-text">
-                      <strong>Location:</strong> {job.location}
-                    </p>
-                    <p className="card-text">
-                      <strong>Type:</strong> {job.jobType}
-                    </p>
-                    <p className="card-text">
-                      <strong>Salary:</strong> {job.salary}
-                    </p>
-                    <p className="card-text">{job.description}</p>
-                    <p className="card-text">
-                      <small className="text-muted">
-                        Posted on {new Date(job.createdAt).toLocaleDateString()}
-                      </small>
-                    </p>
-                  </div>
+          <div className="row g-3">
+            {filteredJobs.map((job) => (
+              <div className="col-lg-3 col-md-4 col-sm-6" key={job._id}>
+                <div className="small-job-card shadow-sm rounded p-3">
+                  <h5 className="text-primary">{job.title}</h5>
+                  <p className="mb-1">
+                    <FaMapMarkerAlt className="me-1 text-secondary" />
+                    {job.location}
+                  </p>
+                  <p className="mb-1">
+                    <FaBriefcase className="me-1 text-secondary" />
+                    {job.jobType}
+                  </p>
+                  <p className="mb-1">
+                    <FaDollarSign className="me-1 text-secondary" />
+                    {job.salary}
+                  </p>
+                  <button
+                    className="btn btn-outline-primary btn-sm mt-2 w-100"
+                    onClick={() => handleViewDetails(job._id)} // Navigate on click
+                  >
+                    View Details
+                  </button>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <p>No jobs match your search criteria.</p>
+          <p></p>
         )}
       </div>
     </div>

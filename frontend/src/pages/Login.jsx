@@ -55,7 +55,9 @@ const Login3D = () => {
   const handleLoginSuccess = (data) => {
     localStorage.setItem('jwtToken', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
-    
+    localStorage.setItem('data', JSON.stringify(data));
+    console.log(data)
+
     const { state } = location;
     if (state?.returnUrl) {
       navigate(state.returnUrl);
@@ -78,13 +80,22 @@ const Login3D = () => {
         email,
         password,
       });
+
+      // Log the response data to inspect the successful response structure
+      console.log('Login response:', response);
+
       const token = response.data.token;
 
       // Set cookie
       Cookies.set('token', token, { expires: 1 });
       toast.success('Login successful');
+
+      // Call the success handler
       handleLoginSuccess({ token, user: response.data.user });
+
     } catch (error) {
+      // Log the error to understand why the login failed
+      console.error('Login error:', error.response || error);
       toast.error(error.response?.data?.message || "Login failed");
     }
   };

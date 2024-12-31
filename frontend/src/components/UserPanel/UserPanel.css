@@ -211,4 +211,40 @@
     flex-direction: column;
     gap: 0.5rem;
   }
+  .job-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-edit, .btn-delete {
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn-edit {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
+  
+  .btn-edit:hover {
+    background-color: #45a049;
+  }
+  
+  .btn-delete {
+    background-color: #f44336; /* Red */
+    color: white;
+  }
+  
+  .btn-delete:hover {
+    background-color: #da190b;
+  }
+  
+  .btn-edit svg, .btn-delete svg {
+    margin-right: 5px;
+  }
+  
 }

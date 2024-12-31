@@ -25,6 +25,8 @@
     "react-router-dom": "^7.0.2",
     "react-toastify": "^11.0.2",
     "sass": "^1.83.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.13",
     "waypoints": "^4.0.1",
     "wowjs": "^1.1.3"

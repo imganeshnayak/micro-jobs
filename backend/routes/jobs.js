@@ -6,6 +6,7 @@ const router = express.Router();
 
 // Create a new job
 router.post('/', async (req, res) => {
+  console.log(req.body); 
   try {
     const newJob = new Job(req.body);
     const savedJob = await newJob.save();
@@ -18,6 +19,27 @@ router.post('/', async (req, res) => {
       message: 'Error posting job',
       error: error.message 
     });
+  }
+});
+// routes/jobs.js
+
+// Get all jobs posted by a specific user
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const jobs = await Job.find({ userId: req.params.userId });
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const jobs = await Job.find({ userId: req.params.userId });
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

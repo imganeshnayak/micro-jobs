@@ -62,8 +62,8 @@ function Navbar() {
                   Account
                 </a>
                 <div className="dropdown-menu rounded-0 m-0">
-                  <Link to="/user-panel" className="dropdown-item">Dashboard</Link>
-                  <a 
+                <Link to="/user-panel">Dashboard</Link> {/* Link to Dashboard */}
+                <a 
                     href="#" 
                     className="dropdown-item"
                     onClick={() => {

@@ -1,4 +1,3 @@
-// JobList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -12,7 +11,9 @@ const JobList = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();  // useNavigate for programmatic navigation
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10; // Show 10 jobs per page
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -30,6 +31,21 @@ const JobList = () => {
     fetchJobs();
   }, []);
 
+  const handleViewDetails = (jobId) => {
+    navigate(`/job-details/${jobId}`);
+  };
+
+  // Pagination logic
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   if (loading)
     return (
       <div className="loading-spinner d-flex justify-content-center align-items-center vh-100">
@@ -46,10 +62,6 @@ const JobList = () => {
       </div>
     );
 
-  const handleViewDetails = (jobId) => {
-    navigate(`/job-details/${jobId}`); // Redirect to the JobDetail page with jobId
-  };
-
   return (
     <>
       <div className="container-xxl p-0">
@@ -65,8 +77,8 @@ const JobList = () => {
             </div>
           </div>
           <div className="row g-4">
-            {jobs.map((job) => (
-              <div className="col-lg-4 col-md-6" key={job._id}>
+            {currentJobs.map((job) => (
+              <div className="col-lg-3 col-md-4 col-sm-6" key={job._id}>
                 <div className="job-card shadow-sm rounded p-4 h-100">
                   <h4 className="job-title mb-3 text-primary">{job.title}</h4>
                   <p className="job-company mb-2">
@@ -81,8 +93,8 @@ const JobList = () => {
                   <p className="job-description text-truncate">
                     {job.description}
                   </p>
-                  <button 
-                    className="btn btn-outline-primary mt-3" 
+                  <button
+                    className="btn btn-outline-primary mt-3"
                     onClick={() => handleViewDetails(job._id)}
                   >
                     View Details
@@ -90,6 +102,27 @@ const JobList = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-4">
+            <nav>
+              <ul className="pagination">
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <li
+                    key={index}
+                    className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
         <Footer />
