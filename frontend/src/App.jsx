@@ -7,39 +7,43 @@ import JobDetail from "./pages/JobDetail";
 import JobCategory from "./pages/JobCategory";
 import Login from "./pages/Login";
 import UserPanel from './components/UserPanel/UserPanel';
-import PostJob from './pages/job/PostJob'; // Import PostJob
-import Chat from './components/Chat';
-
+import PostJob from './pages/job/PostJob';
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import Chat from './components/Chat'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-// Import CSS
-
 
 function App() {
   return (
     <>
-          <ToastContainer />
+      <ToastContainer />
 
-    <Router>
-   
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/job-list" element={<JobList />} />
-        <Route path="/job-category" element={<JobCategory />} />
-        <Route path="/user-panel" element={<UserPanel />} />
-        <Route path="/post-job" element={<PostJob />} />
-        <Route path="/jobs" element={<JobList />} />
-        <Route path="/job-details/:jobId" element={<JobDetail />} />
-        <Route path="/chat/:chatId" element={<Chat/>} />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/job-list" element={<JobList />} />
+          <Route path="/job-category" element={<JobCategory />} />
 
+          {/* Protected Routes */}
+          <Route
+            path="/user-panel"
+            element={<ProtectedRoute element={<UserPanel />} />}
+          />
+          <Route
+            path="/post-job"
+            element={<ProtectedRoute element={<PostJob />} />}
+          />
+          <Route
+            path="/job-details/:jobId"
+            element={<ProtectedRoute element={<JobDetail />} />}
+          />
+<Route path="/chat/:chatRoomId" element={<Chat />} />
 
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
     </>
   );
 }

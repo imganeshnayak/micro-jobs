@@ -1,27 +1,37 @@
 .cat-item {
-    text-decoration: none;
-    display: block;
-    background-color: #f9f9f9;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  display: block;
+  background-color: #f9f9f9;
+  border: 2px solid transparent;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.cat-item.glowing-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid rgba(0, 255, 0, 0.75);
+  border-radius: 8px; /* Match the border-radius of your elements */
+  animation: glowing-border-animation 1.5s infinite;
+  z-index: -1;
+}
+
+.cat-item.glowing-border:hover {
+  transform: translateY(-10px);
+}
+
+@keyframes glowing-border-animation {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
   }
-  
-  .cat-item.glowing-border {
-    border: 2px solid transparent;
-    box-shadow: 0 0 0 rgba(0, 255, 0, 0.75);
-    transition: 0.3s;
+  50% {
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.75);
   }
-  
-  .cat-item.glowing-border:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.75), 0 0 40px rgba(0, 255, 0, 0.5);
-    border-color: rgba(0, 255, 0, 0.75);
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
   }
-  
-  i {
-    transition: color 0.3s ease;
-  }
-  
-  .cat-item:hover i {
-    color: #00ff00;
-  }
-  
+}

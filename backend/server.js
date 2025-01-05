@@ -2,75 +2,53 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import http from 'http'; // Import http module for socket.io
-import { Server as SocketServer } from "socket.io"; // ✅ Correct for ES modules
+import http from 'http';
+import { Server } from 'socket.io';
 import authRoutes from './routes/auth.js';
-import jobRoutes from './routes/jobs.js'; // Already in your server.js
-import searchRoutes from './routes/Search.js';
+import jobRoutes from './routes/jobs.js';
+import searchRoutes from './routes/search.js';
 import chatRoutes from './routes/chat.js'; // Import chat routes
+import notificationsRoutes from './routes/notifications.js'; // Import notifications routes
+
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const server = http.createServer(app); // Create HTTP server to attach socket.io
-const io = new SocketServer(server, {
+const server = http.createServer(app);
+const io = new Server(server, {
   cors: {
-    origin: "*", // Adjust origin to match your frontend URL in production
-    methods: ["GET", "POST"],
-  },
+    origin: 'http://localhost:5173', // Allow only this origin
+    methods: ['GET', 'POST'], // Allow specific methods
+    credentials: true // Allow credentials if needed
+  }
 });
+const PORT = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
+
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Connect to MongoDB
+// Socket.io connection
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+// Connect to MongoDB (replace 'your_database_name' with your actual database name)
 mongoose.connect('mongodb://localhost:27017/ganesh?tls=false', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/', authRoutes);
-app.use('/jobs', jobRoutes); // This line is correct; no need to change it
+app.use('/jobs', jobRoutes);
 app.use('/search', searchRoutes);
-app.use('/chat', chatRoutes); // Use the chat routes in the server
+app.use('/chat', chatRoutes); // Ensure this line is present
+app.use('/notifications', notificationsRoutes); // Add this line
+export { io }; // Add this line to export io
 
-// Handle socket.io events for chat
-let users = {}; // To store connected users by their userId
-
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-
-  // Save user socket id by their userId
-  socket.on('setUser', (userId) => {
-    users[userId] = socket.id;
-    console.log(`User ${userId} connected with socket ID: ${socket.id}`);
-  });
-
-  // When a message is sent, broadcast it to the recipient
-  socket.on('sendMessage', (data) => {
-    const { senderId, receiverId, message } = data;
-    if (users[receiverId]) {
-      io.to(users[receiverId]).emit('receiveMessage', {
-        senderId,
-        message,
-      });
-    }
-  });
-
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
-    for (let userId in users) {
-      if (users[userId] === socket.id) {
-        delete users[userId];
-        break;
-      }
-    }
-  });
-});
-
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -79,7 +57,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server using `server.listen`
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

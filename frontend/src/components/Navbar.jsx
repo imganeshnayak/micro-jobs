@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
     if (token) setIsLoggedIn(true);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken');
+    setIsLoggedIn(false);
+    navigate('/login'); // Redirect to login page
+  };
 
   return (
     <div>
@@ -48,7 +55,7 @@ function Navbar() {
               <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
               <div className="dropdown-menu rounded-0 m-0">
                 <Link to="/job-list" className="dropdown-item">Job List</Link>
-                <Link to="/job-category" className="dropdown-item">Job Detail</Link>
+                <Link to="/job-category" className="dropdown-item">Categories</Link>
               </div>
             </div>
             {isLoggedIn ? (
@@ -62,21 +69,18 @@ function Navbar() {
                   Account
                 </a>
                 <div className="dropdown-menu rounded-0 m-0">
-                <Link to="/user-panel">Dashboard</Link> {/* Link to Dashboard */}
-                <a 
+                  <Link to="/user-panel" className="dropdown-item">Dashboard</Link> {/* Link to Dashboard */}
+                  <a 
                     href="#" 
                     className="dropdown-item"
-                    onClick={() => {
-                      localStorage.removeItem('jwtToken');
-                      setIsLoggedIn(false);
-                    }}
+                    onClick={handleLogout}
                   >
                     Logout
                   </a>
                 </div>
               </div>
             ) : (
-              <Link to="/login" className="btn btn-primary rounded-0 py-2 px-4 ms-2">
+              <Link to="/login" className="btn btn-primary rounded-0 py-4 px-4 ms-2">
                 Sign In<i className="fa fa-arrow-right ms-3"></i>
               </Link>
             )}

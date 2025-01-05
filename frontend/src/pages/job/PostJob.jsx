@@ -12,7 +12,7 @@ const PostJob = () => {
   const [jobData, setJobData] = useState({
     title: '',
     description: '',
-    company: 'default',
+    company: ''||"no company",
     location: '',
     salary: '',
     pincode: '',

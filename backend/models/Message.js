@@ -1,14 +1,11 @@
-// backend/models/Message.js
+// backend/models/message.model.js
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-  from: { type: String, required: true },  // Sender's name
-  content: { type: String, required: true },  // Content of the message
-  type: { type: String, enum: ['hire', 'workOffer'], required: true },  // Type of message (hire or work offer)
-  createdAt: { type: Date, default: Date.now },
+  chatRoomId: { type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' },
+  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  content: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
 });
 
-const Message = mongoose.model('Message', messageSchema);
-
-export default Message;
+export default mongoose.model('Message', messageSchema);

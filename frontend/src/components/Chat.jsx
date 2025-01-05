@@ -1,70 +1,60 @@
 import React, { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-const ChatPage = () => {
-  const { chatId } = useParams();
-  const [chat, setChat] = useState(null);
-  const [message, setMessage] = useState('');
-  const userId = JSON.parse(localStorage.getItem('user'))?._id;
-
+const Chat = ({ chatRoomId, userId }) => {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const socket = io('http://localhost:5000'); // Connect to your server
 
   useEffect(() => {
-    const fetchChat = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/chat/${chatId}`);
-        setChat(response.data);
-      } catch (error) {
-        console.error('Error fetching chat:', error);
-        toast.error('Unable to load chat history.');
-      }
+    const fetchMessages = async () => {
+      const response = await axios.get(`http://localhost:5000/chat/${chatRoomId}/messages`);
+      setMessages(response.data);
     };
 
-    fetchChat();
-  }, [chatId]);
+    fetchMessages();
 
-  const handleSendMessage = async () => {
-    try {
-      if (!chatId) {
-        console.error("Chat ID is undefined");
-        return;
-      }
-  
-      const response = await axios.post(`http://localhost:5000/chat/${chatId}/message`, {
-        sender: userId,  // Ensure userId is correctly set
-        content: message,
-      });
-  
-      console.log('Message sent successfully', response.data);
-    } catch (error) {
-      console.error('Error sending message:', error);
+    socket.on('message', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [chatRoomId]);
+
+  const sendMessage = async () => {
+    if (newMessage.trim()) {
+      const messageData = {
+        chatRoomId,
+        senderId: userId,
+        message: newMessage,
+      };
+
+      await axios.post('http://localhost:5000/chat/send', messageData);
+      setNewMessage('');
     }
   };
-  
 
   return (
     <div>
-      <ToastContainer />
-      <h2>Chat with {chat && chat.users.find((user) => user._id !== userId).name}</h2>
-      <div>
-        {chat && chat.messages.map((msg, idx) => (
-          <div key={idx}>
-            <strong>{msg.sender.name}: </strong>
-            {msg.content}
+      <div className="chat-window">
+        {messages.map((msg, index) => (
+          <div key={index} className={msg.senderId === userId ? 'my-message' : 'other-message'}>
+            {msg.message}
           </div>
         ))}
       </div>
       <input
         type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message"
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        placeholder="Type a message..."
       />
-      <button onClick={handleSendMessage}>Send</button>
+      <button onClick={sendMessage}>Send</button>
     </div>
   );
 };
 
-export default ChatPage;
+export default Chat;
