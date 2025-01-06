@@ -174,7 +174,7 @@ router.post('/rooms', async (req, res) => {
   }
 });
 
-// Send a message
+// // Send a message
 router.post('/send', async (req, res) => {
   const { senderId, receiverId, message, chatRoomId } = req.body;
 
@@ -201,15 +201,96 @@ router.post('/send', async (req, res) => {
     res.status(500).json({ message: 'Error sending message', error: error.message });
   }
 });
+router.post('/send', async (req, res) => {
+  const { senderId, receiverId, message, chatRoomId } = req.body;
 
-// Get messages for a chat room
-router.get('/:chatRoomId/messages', async (req, res) => {
+  // Check if all fields are provided
+  if (!senderId || !receiverId || !message || !chatRoomId) {
+    return res.status(400).json({ message: 'All fields are required: senderId, receiverId, message, and chatRoomId.' });
+  }
+
   try {
-    const messages = await Message.find({ chatRoomId: req.params.chatRoomId }).sort({ timestamp: 1 });
-    res.json(messages);
+    // Save the chat message
+    const chatMessage = new Chat({
+      senderId,
+      receiverId,
+      message,
+      chatRoomId,
+      timestamp: new Date(),
+    });
+    await chatMessage.save();
+
+    res.status(201).json(chatMessage);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching messages', error });
+    console.error('Error sending message:', error);
+    res.status(500).json({ message: 'Error sending message', error: error.message });
   }
 });
+
+// Get messages for a chat room
+// router.get('/:chatRoomId/messages', async (req, res) => {
+//   const { senderId, receiverId, message } = req.body;
+//   const { chatRoomId } = req.params; // Get chatRoomId from the request parameters
+
+//   try {
+//     const messages = await Message.find({ chatRoomId: req.params.chatRoomId }).sort({ timestamp: 1 });
+//     res.json(messages);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching messages', error });
+//   }
+// });
+
+// Send a message
+router.post('/:chatRoomId/messages', async (req, res) => {
+  const { senderId, receiverId, message } = req.body;
+  const { chatRoomId } = req.params; // Get chatRoomId from the request parameters
+
+  if (!senderId || !receiverId || !message || !chatRoomId) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  try {
+    const chatMessage = new Chat({ senderId, receiverId, message, chatRoomId });
+    await chatMessage.save();
+
+    // Additional logic for notifications can go here
+
+    res.status(200).json(chatMessage);
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ message: 'Error sending message', error });
+  }
+});
+
+// router.get('/:chatRoomId/messages', async (req, res) => {
+//   const { chatRoomId } = req.params; // Retrieve chatRoomId from the URL
+//   try {
+//     // Fetch all messages for the specified chat room, sorted by timestamp
+//     const messages = await Message.find({ chatRoomId }).sort({ timestamp: 1 });
+//     if (!messages.length) {
+//       return res.status(404).json({ message: 'No messages found for this chat room.' });
+//     }
+//     res.json(messages);
+//   } catch (error) {
+//     console.error('Error fetching messages:', error);
+//     res.status(500).json({ message: 'Error fetching messages', error: error.message });
+//   }
+// });
+router.get('/:chatRoomId/messages', async (req, res) => {
+  const { chatRoomId } = req.params;
+
+  try {
+    // Fetch all messages for the specified chat room, sorted by timestamp
+    const messages = await Chat.find({ chatRoomId }).sort({ timestamp: 1 });
+    if (!messages.length) {
+      return res.status(404).json({ message: 'No messages found for this chat room.' });
+    }
+    res.json(messages);
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ message: 'Error fetching messages', error: error.message });
+  }
+});
+
 
 export default router;

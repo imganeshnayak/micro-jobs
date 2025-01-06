@@ -5,25 +5,7 @@ import Notification from '../models/Notification.js';
 
 const router = express.Router();
 
-// router.post('/notify', async (req, res) => {
-//   const { jobId, senderName, senderId } = req.body;
 
-//   try {
-//     const job = await Job.findById(jobId).populate('userId'); // Fetch job details with the poster's userId
-//     if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
-
-//     const recipientId = job.userId._id.toString(); // Job poster's user ID
-//     const message = `${senderName} wants to chat about your job "${job.title}".`;
-
-//     // Emit notification to the job poster
-//     io.to(recipientId).emit('notification', { message, senderId, jobId });
-
-//     res.status(200).json({ success: true, message: 'Notification sent successfully' });
-//   } catch (error) {
-//     console.error('Error sending notification:', error);
-//     res.status(500).json({ success: false, message: 'Failed to send notification' });
-//   }
-// });
 
 // Create a new job
 router.post('/', async (req, res) => {
@@ -55,17 +37,7 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 
-// router.get('/messages/:userId/all', async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-//     // Fetch all messages related to the user
-//     const messages = await MessageModel.find({ userId });
-//     res.status(200).json(messages);
-//   } catch (error) {
-//     console.error('Error fetching messages:', error);
-//     res.status(500).json({ error: 'Failed to fetch messages' });
-//   }
-// });
+//
 
 
 router.get('/user/:userId', async (req, res) => {

@@ -91,6 +91,8 @@ const UserPanel = () => {
   const handleAccept = async (notificationId) => {
     try {
       const response = await axios.post(`http://localhost:5000/notifications/accept/${notificationId}`);
+      const chatRoomId = response.data.chatRoomId; // Get chatRoomId from response
+
       if (response.data.chatRoomId) {
         navigate(`/chat/${response.data.chatRoomId}`);
       }
@@ -253,6 +255,5 @@ const UserPanel = () => {
 };
 
 export default UserPanel;
-
 
 

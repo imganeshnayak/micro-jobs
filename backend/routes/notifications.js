@@ -54,7 +54,14 @@ router.delete('/:id', async (req, res) => {
       res.status(500).json({ message: 'Error deleting notification', error: error.message });
   }
 });
-
+router.get('/:chatRoomId/messages', async (req, res) => {
+  try {
+    const messages = await messages.find({ chatRoomId: req.params.chatRoomId }).sort({ timestamp: 1 });
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching messages', error });
+  }
+});
 // Add this POST route to create a new notification
 // router.post('/', async (req, res) => {
 //   const { userId, message, jobId } = req.body;
@@ -92,3 +99,5 @@ router.post('/', async (req, res) => {
 
 
 export default router;
+
+
