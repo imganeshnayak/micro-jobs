@@ -9,9 +9,13 @@ import Login from "./pages/Login";
 import UserPanel from './components/UserPanel/UserPanel';
 import PostJob from './pages/job/PostJob';
 import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
-import Chat from './components/Chat'
+import ChatList from './components/ChatList'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChatPage from './pages/ChatPage';
+
+
+
 
 function App() {
   return (
@@ -26,6 +30,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/job-list" element={<JobList />} />
           <Route path="/job-category" element={<JobCategory />} />
+          <Route path="/chatlist" element={<ChatList />} />
 
           {/* Protected Routes */}
           <Route
@@ -40,7 +45,7 @@ function App() {
             path="/job-details/:jobId"
             element={<ProtectedRoute element={<JobDetail />} />}
           />
-<Route path="/chat/:chatRoomId" element={<Chat />} />
+        <Route path="/chat" element={<ChatPage />} />
 
         </Routes>
       </Router>

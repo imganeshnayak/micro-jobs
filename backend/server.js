@@ -28,13 +28,32 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 // Socket.io connection
-io.on('connection', (socket) => {
-  console.log('A user connected');
+// io.on('connection', (socket) => {
+//   console.log('A user connected');
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
+
+//   // socket.on('fetchMessages', async (chatRoomId) => {
+//   //   try {
+//   //     const messages = await messages.find({ chatRoomId }).sort({ timestamp: 1 });
+//   //     socket.emit('chatHistory', messages); // Send chat history to the client
+//   //   } catch (error) {
+//   //     console.error('Error fetching messages:', error);
+//   //   }
+//   // });
+//   // socket.on('sendMessage', async (messageData) => {
+//   //   try {
+//   //     const newMessage = new Message(messageData);
+//   //     await newMessage.save(); // Save the message to the database
+
+//   //     io.emit('receiveMessage', newMessage); // Broadcast the message
+//   //   } catch (error) {
+//   //     console.error('Error saving message:', error);
+//   //   }
+//   // });
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected');
+//   });
+// });
 
 // Connect to MongoDB (replace 'your_database_name' with your actual database name)
 mongoose.connect('mongodb://localhost:27017/ganesh?tls=false', { useNewUrlParser: true, useUnifiedTopology: true })

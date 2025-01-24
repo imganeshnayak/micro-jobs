@@ -1,142 +1,3 @@
-// import express from 'express';
-// import Chat from '../models/Chat.js'; // Ensure this model exists
-// import Notification from '../models/Notification.js'; // Import Notification model
-// import { io } from '../server.js'; // Ensure you import io from your server file
-// import ChatRoom from '../models/chatRoom.js';
-// import Message from '../models/message.js';
-
-// const router = express.Router();
-
-// // Send a message
-// // router.post('/send', async (req, res) => {
-// //   const { senderId, receiverId, message } = req.body;
-
-// //   try {
-// //     const chatMessage = new Chat({ senderId, receiverId, message });
-// //     await chatMessage.save();
-    
-// //     // Create a notification
-// //     const notification = new Notification({
-// //       userId: receiverId,
-// //       message: `New message from ${senderId}: ${message}`,
-// //       jobId: chatMessage._id, // Assuming you want to link it to the job
-// //       chatRoomId,
-// //     });
-// //     await notification.save(); // Save the notification
-
-// //     // Emit notification to the receiver
-// //     io.to(receiverId).emit('message', chatMessage);
-    
-// //     res.status(200).json(chatMessage);
-// //   } catch (error) {
-// //     console.error('Error sending message:', error);
-// //     res.status(500).json({ message: 'Error sending message', error: error.message });
-// //   }
-// // });
-// router.post('/send', async (req, res) => {
-//   const { senderId, receiverId, message, chatRoomId } = req.body; // Include chatRoomId in the destructure
-
-//   if (!senderId || !receiverId || !message || !chatRoomId) {
-//     return res.status(400).json({ message: 'All fields are required: senderId, receiverId, message, and chatRoomId.' });
-//   }
-
-//   try {
-//     // Save the chat message
-//     const chatMessage = new Chat({ senderId, receiverId, message });
-//     await chatMessage.save();
-
-//     // Create and save a notification
-//     const notification = new Notification({
-//       userId: receiverId,
-//       message: `New message from ${senderId}: ${message}`,
-//       jobId: chatMessage._id, // Link the notification to the job/message ID
-//       chatRoomId, // Use the chatRoomId from the request body
-//     });
-//     await notification.save();
-
-//     // Emit the message to the receiver in real-time
-//     io.to(receiverId).emit('message', chatMessage);
-
-//     res.status(200).json(chatMessage);
-//   } catch (error) {
-//     console.error('Error sending message:', error);
-//     res.status(500).json({ message: 'Error sending message', error: error.message });
-//   }
-// });
-
-
-
-// router.post('/rooms', async (req, res) => {
-//   try {
-//     const { senderId, receiverId, jobId } = req.body;
-    
-//     // Check if chat room already exists
-//     const existingRoom = await ChatRoom.findOne({
-//       participants: { $all: [senderId, receiverId] },
-//       jobId
-//     });
-
-//     if (existingRoom) {
-//       return res.json({ chatRoomId: existingRoom._id });
-//     }
-
-//     // Create new chat room
-//     const newRoom = new ChatRoom({
-//       participants: [senderId, receiverId],
-//       jobId,
-//       createdAt: new Date()
-//     });
-
-//     await newRoom.save();
-//     res.status(201).json({ chatRoomId: newRoom._id });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error creating chat room', error });
-//   }
-// });
-
-// // Get messages for a chat room
-// router.get('/:chatRoomId/messages', async (req, res) => {
-//   try {
-//     const messages = await Message.find({ chatRoomId: req.params.chatRoomId })
-//       .sort({ timestamp: 1 });
-//     res.json(messages);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching messages', error });
-//   }
-// });
-
-// // Send a message
-// router.post('/:chatRoomId/messages', async (req, res) => {
-//   try {
-//     const { senderId, content } = req.body;
-//     const newMessage = new Message({
-//       chatRoomId: req.params.chatRoomId,
-//       senderId,
-//       content,
-//       timestamp: new Date()
-//     });
-
-//     await newMessage.save();
-//     res.status(201).json(newMessage);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error sending message', error });
-//   }
-// });
-
-// // Get messages for a chat room
-// router.get('/:chatRoomId/messages', async (req, res) => {
-//   try {
-//     const messages = await Message.find({ chatRoomId: req.params.chatRoomId }).sort({ timestamp: 1 });
-//     res.json(messages);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching messages', error });
-//   }
-// });
-
-
-
-// export default router; 
-
 
 import express from 'express';
 import Chat from '../models/Chat.js';
@@ -146,6 +7,29 @@ import ChatRoom from '../models/chatRoom.js';
 import Message from '../models/message.js';
 
 const router = express.Router();
+
+router.get('/:chatRoomId', async (req, res) => {
+  const { chatRoomId } = req.params;
+
+  try {
+    const chatRoom = await ChatRoom.findById(chatRoomId).populate('participants');
+    
+    if (!chatRoom) {
+      return res.status(404).json({ message: 'Chat room not found' });
+    }
+
+    // Assuming participants are stored as an array in chatRoom, with user references
+    const senderId = chatRoom.participants[0]._id; // Sender
+    const receiverId = chatRoom.participants[1]._id; // Receiver
+
+    res.json({ senderId, receiverId });
+  } catch (error) {
+    console.error('Error fetching chat room:', error);
+    res.status(500).json({ message: 'Error fetching chat room', error });
+  }
+});
+
+
 
 // Create or get a chat room
 router.post('/rooms', async (req, res) => {
@@ -227,18 +111,6 @@ router.post('/send', async (req, res) => {
   }
 });
 
-// Get messages for a chat room
-// router.get('/:chatRoomId/messages', async (req, res) => {
-//   const { senderId, receiverId, message } = req.body;
-//   const { chatRoomId } = req.params; // Get chatRoomId from the request parameters
-
-//   try {
-//     const messages = await Message.find({ chatRoomId: req.params.chatRoomId }).sort({ timestamp: 1 });
-//     res.json(messages);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching messages', error });
-//   }
-// });
 
 // Send a message
 router.post('/:chatRoomId/messages', async (req, res) => {
@@ -262,20 +134,7 @@ router.post('/:chatRoomId/messages', async (req, res) => {
   }
 });
 
-// router.get('/:chatRoomId/messages', async (req, res) => {
-//   const { chatRoomId } = req.params; // Retrieve chatRoomId from the URL
-//   try {
-//     // Fetch all messages for the specified chat room, sorted by timestamp
-//     const messages = await Message.find({ chatRoomId }).sort({ timestamp: 1 });
-//     if (!messages.length) {
-//       return res.status(404).json({ message: 'No messages found for this chat room.' });
-//     }
-//     res.json(messages);
-//   } catch (error) {
-//     console.error('Error fetching messages:', error);
-//     res.status(500).json({ message: 'Error fetching messages', error: error.message });
-//   }
-// });
+
 router.get('/:chatRoomId/messages', async (req, res) => {
   const { chatRoomId } = req.params;
 
@@ -291,6 +150,60 @@ router.get('/:chatRoomId/messages', async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages', error: error.message });
   }
 });
+
+
+router.get('/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const chats = await Chat.find({ participants: userId }).populate('participants');
+    res.json(chats);
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    res.status(500).json({ message: 'Error fetching chats' });
+  }
+});
+router.get('/rooms/:chatRoomId', async (req, res) => {
+  const { chatRoomId } = req.params;
+
+  try {
+    const chatRoom = await ChatRoom.findById(chatRoomId).populate('participants');
+    if (!chatRoom) {
+      return res.status(404).json({ message: 'Chat room not found' });
+    }
+    res.json(chatRoom);
+  } catch (error) {
+    console.error('Error fetching chat room:', error);
+    res.status(500).json({ message: 'Error fetching chat room', error });
+  }
+});
+
+
+
+
+
+// Fetch all chat rooms for a particular user
+router.get('/user/:userId/rooms', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const chatRooms = await ChatRoom.find({
+      participants: userId,
+    })
+      .populate('participants') // Populate participant details (optional)
+      .sort({ createdAt: -1 }); // Sort by most recent
+
+    if (!chatRooms.length) {
+      return res.status(404).json({ message: 'No chat rooms found for this user.' });
+    }
+
+    res.status(200).json(chatRooms);
+  } catch (error) {
+    console.error('Error fetching chat rooms:', error);
+    res.status(500).json({ message: 'Error fetching chat rooms', error: error.message });
+  }
+});
+
 
 
 export default router;

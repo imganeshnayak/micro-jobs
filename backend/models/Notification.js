@@ -6,7 +6,7 @@ const notificationSchema = new mongoose.Schema({
   jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
   seen: { type: Boolean, default: false },
   chatRoomId: { type: mongoose.Schema.Types.ObjectId, required: true },
-
+  
   createdAt: { type: Date, default: Date.now }
 });
 

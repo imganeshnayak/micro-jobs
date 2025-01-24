@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar';
-import { FaEnvelope, FaBriefcase, FaComment, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { 
+  FaEnvelope, 
+  FaBriefcase, 
+  FaComment, 
+  FaEdit, 
+  FaTrashAlt, 
+  FaComments,
+  FaUser,
+  FaSignOutAlt
+} from 'react-icons/fa';
 import axios from 'axios';
-import LoadingSpinner from '../LoadingSpinner'; // Import your LoadingSpinner component
-import './UserPanel.css'; // Custom CSS (if needed)
+import LoadingSpinner from '../LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 
 const UserPanel = () => {
-  const [userType, setUserType] = useState('worker'); // Initially worker
-  const [messages, setMessages] = useState([]); // Store messages and notifications combined
-  const [userJobs, setUserJobs] = useState([]); // For jobs posted by the user
-  const [jobOffers, setJobOffers] = useState([]); // For job offers (worker type)
+  const [userType, setUserType] = useState('worker');
+  const [messages, setMessages] = useState([]);
+  const [userJobs, setUserJobs] = useState([]);
+  const [jobOffers, setJobOffers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = JSON.parse(localStorage.getItem('user'))?._id; // Extract user ID from localStorage
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userId = user._id;
+  const userName = user.fullName || "User Name";
+  const userEmail = user.email || "user@example.com";
+  
   const navigate = useNavigate();
 
   const toggleUserType = () => {
     setUserType(userType === 'worker' ? 'hirer' : 'worker');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -39,10 +56,10 @@ const UserPanel = () => {
         // Combine notifications into the messages array
         const notifications = notificationsResponse.data.map((notification) => ({
           id: notification._id,
-          type: 'notification', // Indicate it’s a notification
+          type: 'notification', // Indicate it's a notification
           message: notification.message,
           actions: {
-            accept: () => handleAccept(notification._id),
+            accept: () => handleAccept(notification.jobId),
             delete: () => handleDelete(notification._id),
           },
         }));
@@ -88,27 +105,68 @@ const UserPanel = () => {
     }
   };
 
-  const handleAccept = async (notificationId) => {
+  
+ 
+  const handleAccept = async () => {
     try {
-      const response = await axios.post(`http://localhost:5000/notifications/accept/${notificationId}`);
-      const chatRoomId = response.data.chatRoomId; // Get chatRoomId from response
-
-      if (response.data.chatRoomId) {
-        navigate(`/chat/${response.data.chatRoomId}`);
+      // Fetch all notifications for the user
+      const notificationsResponse = await axios.get(
+        `http://localhost:5000/notifications/${userId}`
+      );
+  
+      // Log the entire notifications response for debugging
+      console.log("Notifications Response:", notificationsResponse.data);
+  
+      // Assuming `notificationsResponse.data` is an array of notification objects
+      const notifications = notificationsResponse.data;
+  
+      if (!notifications || notifications.length === 0) {
+        console.error("No notifications found for the user.");
+        return;
       }
+  
+      // Log each notification to understand its structure
+      notifications.forEach((notification) => {
+        console.log("Notification:", notification);
+      });
+  
+      // Assume you want to process only the first notification for this example
+      const notification = notifications[0]; // Adjust based on your requirements
+  
+      console.log("Processing Notification:", notification);
+  
+      // Extract chatRoomId from the notification
+      const chatRoomId = notification.chatRoomId; 
+  
+      if (!chatRoomId) {
+        console.error("Chat Room ID is missing in the notification.");
+        return;
+      }
+  
+      console.log(`Chat Room ID: ${chatRoomId}`);
+  
+      // Fetch the chat room details using the chatRoomId
+      const chatRoomResponse = await axios.get(
+        `http://localhost:5000/chat/${chatRoomId}`
+      );
+  
+      const { senderId, receiverId } = chatRoomResponse.data;
+  
+      if (!senderId || !receiverId) {
+        console.error("Sender ID or Receiver ID is missing in the chat room.");
+        return;
+      }
+  
+      console.log(`Sender ID: ${senderId}`);
+      console.log(`Receiver ID: ${receiverId}`);
+  
+      // Navigate to the chat with the chatRoomId, senderId, and receiverId
+      navigate(`/chat?chatRoomId=${chatRoomId}&senderId=${senderId}&receiverId=${receiverId}`);
     } catch (error) {
-      console.error('Error accepting notification:', error);
+      console.error("Error accepting notification:", error);
     }
   };
-
-  // const handleDelete = async (notificationId) => {
-  //   try {
-  //     const response = await axios.delete(`http://localhost:5000/notifications/${notificationId}`);
-  //     setMessages(messages.filter((msg) => msg.id !== notificationId));
-  //   } catch (error) {
-  //     console.error('Error deleting notification:', error);
-  //   }
-  // };
+  
 
 
   const handleDelete = async (notificationId) => {
@@ -134,119 +192,171 @@ const UserPanel = () => {
   };
 
   return (
-    <div className="user-panel container">
+    <div className="user-panel bg-light min-vh-100">
       <Navbar />
-      <div className="profile-section my-4">
-        <div className="profile-header d-flex align-items-center">
-          <div className="profile-image me-3">
-            <img src="https://via.placeholder.com/150" alt="Profile" className="img-fluid rounded-circle" />
-            <button className="btn btn-outline-secondary edit-photo">
-              <FaEdit />
-            </button>
-          </div>
-          <div className="profile-info">
-            <h2>Alex Johnson</h2>
-            <p className="email">
-              <FaEnvelope /> alex@example.com
-            </p>
-            <div className="user-type">
-              <span className={`badge ${userType === 'worker' ? 'bg-primary' : 'bg-success'}`}>
-                <FaBriefcase /> {userType.charAt(0).toUpperCase() + userType.slice(1)}
-              </span>
-              <button className="btn btn-link toggle-type" onClick={toggleUserType}>
-                Switch to {userType === 'worker' ? 'Hirer' : 'Worker'}
-              </button>
+      <div className="container py-4">
+        <div className="row">
+          {/* Profile Section */}
+          <div className="col-md-4 mb-4">
+            <div className="card shadow-sm">
+              <div className="card-body text-center">
+                <div className="position-relative d-inline-block mb-3">
+                  <img 
+                    src="https://via.placeholder.com/150" 
+                    alt="Profile" 
+                    className="img-fluid rounded-circle mb-3 shadow"
+                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                  />
+                  <button className="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
+                    <FaEdit />
+                  </button>
+                </div>
+                <h3 className="card-title">{userName}</h3>
+                <p className="text-muted mb-2">
+                  <FaEnvelope className="me-2" />{userEmail}
+                </p>
+                <div className="d-flex justify-content-center align-items-center mb-3">
+                  <span className={`badge ${userType === 'worker' ? 'bg-primary' : 'bg-success'} me-2`}>
+                    <FaBriefcase className="me-1" /> 
+                    {userType.charAt(0).toUpperCase() + userType.slice(1)}
+                  </span>
+                  <button 
+                    className="btn btn-outline-secondary btn-sm" 
+                    onClick={toggleUserType}
+                  >
+                    Switch to {userType === 'worker' ? 'Hirer' : 'Worker'}
+                  </button>
+                </div>
+                <div className="d-flex justify-content-center">
+                  <button 
+                    className="btn btn-outline-primary me-2" 
+                    onClick={() => navigate('/chatlist')}
+                  >
+                    <FaComments className="me-1" /> Chat List
+                  </button>
+                  <button 
+                    className="btn btn-outline-danger" 
+                    onClick={handleLogout}
+                  >
+                    <FaSignOutAlt className="me-1" /> Logout
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Combined Messages and Notifications Section */}
-      <div className="panel-content">
-        <div className="messages-section mb-4">
-          <h3>
-            <FaComment /> Messages & Notifications
-          </h3>
-          <div className="list-group">
-            {loading ? (
-              <LoadingSpinner /> // Show loading spinner while data is loading
-            ) : messages.length > 0 ? (
-              messages.map((message) => (
-                <div key={message.id} className="list-group-item">
-                  <p>{message.message}</p>
-                  {message.type === 'notification' && (
-                    <div className="notification-actions">
-                      <button className="btn btn-success btn-sm me-2" onClick={message.actions.accept}>
-                        Accept
-                      </button>
-                      <button className="btn btn-danger btn-sm" onClick={message.actions.delete}>
-                        Delete
-                      </button>
+          {/* Content Section */}
+          <div className="col-md-8">
+            {/* Messages & Notifications */}
+            <div className="card shadow-sm mb-4">
+              <div className="card-header bg-primary text-white">
+                <FaComment className="me-2" />
+                Messages & Notifications
+              </div>
+              <div className="card-body">
+                {loading ? (
+                  <LoadingSpinner />
+                ) : messages.length > 0 ? (
+                  messages.map((message) => (
+                    <div 
+                      key={message.id} 
+                      className="alert alert-light d-flex justify-content-between align-items-center"
+                    >
+                      <span>{message.message}</span>
+                      {message.type === 'notification' && (
+                        <div>
+                          <button 
+                            className="btn btn-success btn-sm me-2" 
+                            onClick={message.actions.accept}
+                          >
+                            Accept
+                          </button>
+                          <button 
+                            className="btn btn-danger btn-sm" 
+                            onClick={message.actions.delete}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No messages or notifications available.</p>
-            )}
-          </div>
-        </div>
+                  ))
+                ) : (
+                  <p className="text-center text-muted">No messages or notifications.</p>
+                )}
+              </div>
+            </div>
 
-        {/* Job Offers Section */}
-        <div className="offers-section">
-          <h3>
-            <FaBriefcase /> {userType === 'worker' ? 'Job Offers' : 'Your Posted Jobs'}
-          </h3>
-          <div className="offers-list">
-            {loading ? (
-              <LoadingSpinner />
-            ) : userType === 'worker' ? (
-              jobOffers.length > 0 ? (
-                jobOffers.map((offer) => (
-                  <div key={offer.id} className="offer-card card mb-3">
-                    <div className="card-body">
-                      <h4 className="card-title">{offer.role}</h4>
-                      <p className="card-text">{offer.company}</p>
-                      <p className="card-text">
-                        <strong>{offer.salary}</strong>
-                      </p>
-                      <button className="btn btn-success">Apply Now</button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No job offers available at the moment.</p>
-              )
-            ) : (
-              userJobs.length > 0 ? (
-                userJobs.map((job) => (
-                  <div key={job._id} className="offer-card card mb-3">
-                    <div className="card-body">
-                      <h4 className="card-title">{job.title}</h4>
-                      <p className="card-text">
-                        <strong>Company:</strong> {job.company}
-                      </p>
-                      <p className="card-text">
-                        <strong>Location:</strong> {job.location}
-                      </p>
-                      <p className="card-text">
-                        <strong>Salary:</strong> {job.salary}
-                      </p>
-                      <div className="job-actions">
-                        <button className="btn btn-warning me-2" onClick={() => handleEditJob(job._id)}>
-                          <FaEdit /> Edit
-                        </button>
-                        <button className="btn btn-danger" onClick={() => handleDeleteJob(job._id)}>
-                          <FaTrashAlt /> Delete
-                        </button>
+            {/* Jobs Section */}
+            <div className="card shadow-sm">
+              <div className="card-header bg-success text-white">
+                <FaBriefcase className="me-2" />
+                {userType === 'worker' ? 'Job Offers' : 'Your Posted Jobs'}
+              </div>
+              <div className="card-body">
+                {loading ? (
+                  <LoadingSpinner />
+                ) : userType === 'worker' ? (
+                  jobOffers.length > 0 ? (
+                    jobOffers.map((offer) => (
+                      <div key={offer.id} className="card mb-3 border-light">
+                        <div className="card-body">
+                          <h5 className="card-title">{offer.role}</h5>
+                          <p className="card-text text-muted">{offer.company}</p>
+                          <p className="card-text">
+                            <strong className="text-success">{offer.salary}</strong>
+                          </p>
+                          <button className="btn btn-outline-success">Apply Now</button>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>You have not posted any jobs yet.</p>
-              )
-            )}
+                    ))
+                  ) : (
+                    <p className="text-center text-muted">No job offers available.</p>
+                  )
+                ) : (
+                  userJobs.length > 0 ? (
+                    userJobs.map((job) => (
+                      <div key={job._id} className="card mb-3 border-light">
+                        <div className="card-body">
+                          <h5 className="card-title">{job.title}</h5>
+                          <div className="row">
+                            <div className="col-md-6">
+                              <p className="card-text">
+                                <strong>Company:</strong> {job.company}
+                              </p>
+                              <p className="card-text">
+                                <strong>Location:</strong> {job.location}
+                              </p>
+                            </div>
+                            <div className="col-md-6">
+                              <p className="card-text">
+                                <strong>Salary:</strong> {job.salary}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="job-actions mt-3">
+                            <button 
+                              className="btn btn-warning me-2" 
+                              onClick={() => handleEditJob(job._id)}
+                            >
+                              <FaEdit className="me-1" /> Edit
+                            </button>
+                            <button 
+                              className="btn btn-danger" 
+                              onClick={() => handleDeleteJob(job._id)}
+                            >
+                              <FaTrashAlt className="me-1" /> Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-muted">No jobs posted yet.</p>
+                  )
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -255,5 +365,3 @@ const UserPanel = () => {
 };
 
 export default UserPanel;
-
-

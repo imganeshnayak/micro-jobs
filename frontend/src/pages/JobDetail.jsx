@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -15,7 +16,6 @@ const JobDetail = () => {
   const [error, setError] = useState(null);
   const [chatRoomId, setChatRoomId] = useState(null);
   const [jobPosterId, setJobPosterId] = useState(null);
-  const [showChat, setShowChat] = useState(false); // State to control chat visibility
   const navigate = useNavigate();
 
   const userId = JSON.parse(localStorage.getItem('user'))?._id;
@@ -24,12 +24,10 @@ const JobDetail = () => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/jobs/jobs/${jobId}`);
-        console.log('Fetched job details:', response.data);
         setJob(response.data);
       } catch (error) {
         setError('Failed to fetch job details. Please try again later.');
         toast.error('Failed to fetch job details. Please try again later.');
-        console.error('Error fetching job details:', error);
       } finally {
         setLoading(false);
       }
@@ -46,21 +44,15 @@ const JobDetail = () => {
 
   const handleMessageClick = async () => {
     try {
-      console.log('Creating chat room with:', { senderId: userId, receiverId: jobPosterId });
       const response = await axios.post('http://localhost:5000/chat/rooms', {
         senderId: userId,
         receiverId: jobPosterId,
       });
 
       const chatRoomId = response.data.chatRoomId;
-      console.log('Chat room created:', chatRoomId);
-
       if (!chatRoomId) {
         throw new Error('Chat room ID is missing in the response');
       }
-
-      setChatRoomId(chatRoomId);
-      setShowChat(true);
 
       // Send notification with chat room ID
       await axios.post('http://localhost:5000/chat/send', {
@@ -71,15 +63,15 @@ const JobDetail = () => {
       });
 
       toast.success('Redirecting to chat page...');
+      navigate(`/chat?chatRoomId=${chatRoomId}&senderId=${userId}&receiverId=${jobPosterId}`);
     } catch (error) {
-      console.error('Error sending message:', error);
       toast.error('Unable to send message. Please try again.');
     }
   };
 
   if (loading)
     return (
-      <div className="loading-spinner d-flex justify-content-center align-items-center vh-100">
+      <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -88,7 +80,7 @@ const JobDetail = () => {
 
   if (error)
     return (
-      <div className="error-message text-center text-danger mt-5">
+      <div className="text-center text-danger mt-5">
         <h2>{error}</h2>
       </div>
     );
@@ -100,71 +92,87 @@ const JobDetail = () => {
       <BreadCrumbs title="Job Details" />
       <div className="container py-5">
         <div className="card shadow-lg border-0">
+          {/* Header */}
           <div
-            className="card-header py-4"
+            className="card-header text-center py-4"
             style={{
               background: 'linear-gradient(90deg, #4CAF50, #2E7D32)',
               color: 'white',
               fontFamily: "'Montserrat', sans-serif",
-              textAlign: 'center',
             }}
           >
-            <h1 style={{ fontWeight: 700, fontSize: '2.5rem' }}>{job.title}</h1>
-            <p style={{ fontSize: '1.2rem', marginTop: '8px' }}>{job.company}</p>
+            <h1 className="fw-bold mb-0">{job.title}</h1>
+            <p className="fs-5 mt-2">{job.company}</p>
           </div>
-          <div className="card-body py-5 px-4">
+
+          {/* Body */}
+          <div className="card-body px-5 py-4">
             <div className="row g-4">
               <div className="col-lg-8">
-                <h4 style={{ fontWeight: 600, color: '#4CAF50', marginBottom: '20px' }}>
-                  Job Details
-                </h4>
-                <p><strong>Location:</strong> {job.location}</p>
-                <p><strong>Salary:</strong> {job.salary}</p>
-                <p><strong>State:</strong> {job.state}</p>
-                <p><strong>Description:</strong> {job.description}</p>
+                <h4 className="fw-bold text-success mb-3">Job Details</h4>
+                <ul className="list-unstyled">
+                  <li>
+                    <strong>Location:</strong> {job.location}
+                  </li>
+                  <li>
+                    <strong>Salary:</strong> {job.salary}
+                  </li>
+                  <li>
+                    <strong>State:</strong> {job.state}
+                  </li>
+                  <li>
+                    <strong>Description:</strong> {job.description}
+                  </li>
+                </ul>
 
-                <h4 style={{ fontWeight: 600, color: '#4CAF50', marginBottom: '20px' }}>
-                  Job Requirements
-                </h4>
-                <p><strong>Category:</strong> {job.category}</p>
-                <p><strong>Job Type:</strong> {job.jobType}</p>
+                <h4 className="fw-bold text-success mt-4 mb-3">Job Requirements</h4>
+                <ul className="list-unstyled">
+                  <li>
+                    <strong>Category:</strong> {job.category}
+                  </li>
+                  <li>
+                    <strong>Job Type:</strong> {job.jobType}
+                  </li>
+                </ul>
               </div>
 
               <div className="col-lg-4">
+                {/* Sidebar */}
                 <div className="card shadow-sm border-0">
                   <div className="card-body">
-                    <h5 style={{ fontWeight: 700, color: '#2E7D32', marginBottom: '20px' }}>
-                      Posted By
-                    </h5>
-                    <p><strong>Name:</strong> {job.posterName}</p>
-                    <p><strong>Email:</strong> {job.email}</p>
+                    <h5 className="fw-bold text-success mb-4">Posted By</h5>
+                    <p>
+                      <strong>Name:</strong> {job.posterName}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {job.email}
+                    </p>
                     <button
-                      className="btn"
-                      style={{
-                        background: '#4CAF50',
-                        color: 'white',
-                        fontWeight: 600,
-                        width: '100%',
-                        marginTop: '16px',
-                      }}
+                      className="btn btn-success w-100 mt-3"
                       onClick={handleMessageClick}
+                      style={{
+                        fontWeight: 'bold',
+                        transition: 'all 0.3s',
+                      }}
                     >
-                      Message
+                      Send Message
                     </button>
-                    {showChat && chatRoomId && (
-                      <Chat chatRoomId={chatRoomId} senderId={userId} receiverId={jobPosterId} />
-                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Footer */}
           <div
             className="card-footer text-center py-3"
-            style={{ background: '#f8f9fa', fontSize: '0.9rem' }}
+            style={{
+              backgroundColor: '#f8f9fa',
+              fontSize: '0.9rem',
+            }}
           >
             <p className="mb-0 text-muted">
-              Contact <strong>{job.email}</strong> for more details.
+              For more details, contact <strong>{job.email}</strong>.
             </p>
           </div>
         </div>
@@ -175,3 +183,4 @@ const JobDetail = () => {
 };
 
 export default JobDetail;
+      
