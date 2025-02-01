@@ -8,7 +8,9 @@ import {
   FaTrashAlt, 
   FaComments,
   FaUser,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaBell,
+  FaListUl
 } from 'react-icons/fa';
 import axios from 'axios';
 import LoadingSpinner from '../LoadingSpinner';
@@ -24,7 +26,7 @@ const UserPanel = () => {
   const userId = user._id;
   const userName = user.fullName || "User Name";
   const userEmail = user.email || "user@example.com";
-  
+  const pfp = user.profilePicture || "";
   const navigate = useNavigate();
 
   const toggleUserType = () => {
@@ -36,7 +38,12 @@ const UserPanel = () => {
     navigate('/login');
   };
 
+  const handleEditProfile = () => {
+    navigate('/user-details'); // Redirect to the edit profile page
+  };
+
   useEffect(() => {
+
     const fetchNotificationsAndMessages = async () => {
       try {
         setLoading(true);
@@ -85,15 +92,24 @@ const UserPanel = () => {
       setLoading(false);
     }
   };
-
-  const fetchJobOffers = () => {
-    // Dummy job offers for the worker (replace with real API calls)
-    setJobOffers([
-      { id: 1, company: 'Tech Corp', role: 'Frontend Developer', salary: '$5000' },
-      { id: 2, company: 'Dev Inc', role: 'UI Developer', salary: '$4500' },
-    ]);
-    setLoading(false);
+  const fetchJobOffers = async () => {
+    try {
+      setLoading(true);
+      
+      const userPincode = user.pincode;
+      const response = await axios.get(`http://localhost:5000/jobs?pincode=${userPincode}`);
+      
+      // Limit job offers to 3 or 4
+      const jobData = response.data.slice(0, 4); // Change to `.slice(0, 3)` if you only want 3 jobs
+  
+      setJobOffers(jobData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching job offers:', error);
+      setLoading(false);
+    }
   };
+  
 
   const handleDeleteJob = async (jobId) => {
     try {
@@ -105,83 +121,44 @@ const UserPanel = () => {
     }
   };
 
-  
- 
   const handleAccept = async () => {
     try {
-      // Fetch all notifications for the user
       const notificationsResponse = await axios.get(
         `http://localhost:5000/notifications/${userId}`
       );
-  
-      // Log the entire notifications response for debugging
-      console.log("Notifications Response:", notificationsResponse.data);
-  
-      // Assuming `notificationsResponse.data` is an array of notification objects
       const notifications = notificationsResponse.data;
-  
-      if (!notifications || notifications.length === 0) {
-        console.error("No notifications found for the user.");
-        return;
-      }
-  
-      // Log each notification to understand its structure
-      notifications.forEach((notification) => {
-        console.log("Notification:", notification);
-      });
-  
-      // Assume you want to process only the first notification for this example
-      const notification = notifications[0]; // Adjust based on your requirements
-  
-      console.log("Processing Notification:", notification);
-  
-      // Extract chatRoomId from the notification
-      const chatRoomId = notification.chatRoomId; 
-  
+      const notification = notifications[0];
+      const chatRoomId = notification.chatRoomId;
+
       if (!chatRoomId) {
         console.error("Chat Room ID is missing in the notification.");
         return;
       }
-  
-      console.log(`Chat Room ID: ${chatRoomId}`);
-  
-      // Fetch the chat room details using the chatRoomId
+
       const chatRoomResponse = await axios.get(
         `http://localhost:5000/chat/${chatRoomId}`
       );
-  
+
       const { senderId, receiverId } = chatRoomResponse.data;
-  
+
       if (!senderId || !receiverId) {
         console.error("Sender ID or Receiver ID is missing in the chat room.");
         return;
       }
-  
-      console.log(`Sender ID: ${senderId}`);
-      console.log(`Receiver ID: ${receiverId}`);
-  
-      // Navigate to the chat with the chatRoomId, senderId, and receiverId
+
       navigate(`/chat?chatRoomId=${chatRoomId}&senderId=${senderId}&receiverId=${receiverId}`);
     } catch (error) {
       console.error("Error accepting notification:", error);
     }
   };
-  
-
 
   const handleDelete = async (notificationId) => {
     try {
-      console.log('Deleting notification:', notificationId);
-      
-      const response = await axios.delete(`http://localhost:5000/notifications/${notificationId}`);
-      
-      if (response.status === 200) {
-        // Only filter out the specific notification that was deleted
-        setMessages(prevMessages => 
-          prevMessages.filter(message => message.id !== notificationId)
-        );
-        console.log('Notification deleted successfully');
-      }
+      await axios.delete(`http://localhost:5000/notifications/${notificationId}`);
+      setMessages(prevMessages => 
+        prevMessages.filter(message => message.id !== notificationId)
+      );
+      console.log('Notification deleted successfully');
     } catch (error) {
       console.error('Error deleting notification:', error);
     }
@@ -194,63 +171,60 @@ const UserPanel = () => {
   return (
     <div className="user-panel bg-light min-vh-100">
       <Navbar />
-      <div className="container py-4">
+      <div className="container-fluid">
         <div className="row">
-          {/* Profile Section */}
-          <div className="col-md-4 mb-4">
-            <div className="card shadow-sm">
-              <div className="card-body text-center">
-                <div className="position-relative d-inline-block mb-3">
-                  <img 
-                    src="https://via.placeholder.com/150" 
-                    alt="Profile" 
-                    className="img-fluid rounded-circle mb-3 shadow"
-                    style={{ width: '150px', height: '150px', objectFit: 'cover' }}
-                  />
-                  <button className="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle">
-                    <FaEdit />
-                  </button>
-                </div>
-                <h3 className="card-title">{userName}</h3>
-                <p className="text-muted mb-2">
-                  <FaEnvelope className="me-2" />{userEmail}
-                </p>
-                <div className="d-flex justify-content-center align-items-center mb-3">
-                  <span className={`badge ${userType === 'worker' ? 'bg-primary' : 'bg-success'} me-2`}>
-                    <FaBriefcase className="me-1" /> 
-                    {userType.charAt(0).toUpperCase() + userType.slice(1)}
-                  </span>
-                  <button 
-                    className="btn btn-outline-secondary btn-sm" 
-                    onClick={toggleUserType}
-                  >
-                    Switch to {userType === 'worker' ? 'Hirer' : 'Worker'}
-                  </button>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <button 
-                    className="btn btn-outline-primary me-2" 
-                    onClick={() => navigate('/chatlist')}
-                  >
-                    <FaComments className="me-1" /> Chat List
-                  </button>
-                  <button 
-                    className="btn btn-outline-danger" 
-                    onClick={handleLogout}
-                  >
-                    <FaSignOutAlt className="me-1" /> Logout
-                  </button>
-                </div>
-              </div>
+          {/* Sidebar */}
+          <div className="col-md-3 bg-dark text-white p-4">
+            <div className="text-center mb-4">
+              <img 
+                src={pfp}
+                alt="Profile" 
+                className="img-fluid rounded-circle mb-3"
+                style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+              />
+              <h4>{userName}</h4>
+              <p className="text-muted">{userEmail}</p>
+              <button 
+                className="btn btn-outline-light btn-sm mb-3" 
+                onClick={toggleUserType}
+              >
+                Switch to {userType === 'worker' ? 'Hirer' : 'Worker'}
+              </button>
             </div>
+            <ul className="nav flex-column">
+              <li className="nav-item mb-2">
+                <button 
+                  className="btn btn-outline-light w-100 text-start"
+                  onClick={handleEditProfile}
+                >
+                  <FaEdit className="me-2" /> Edit Profile
+                </button>
+              </li>
+              <li className="nav-item mb-2">
+                <button 
+                  className="btn btn-outline-light w-100 text-start"
+                  onClick={() => navigate('/chat')}
+                >
+                  <FaComments className="me-2" /> Chat List
+                </button>
+              </li>
+              <li className="nav-item mb-2">
+                <button 
+                  className="btn btn-outline-light w-100 text-start"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt className="me-2" /> Logout
+                </button>
+              </li>
+            </ul>
           </div>
 
-          {/* Content Section */}
-          <div className="col-md-8">
+          {/* Main Content */}
+          <div className="col-md-9 p-4">
             {/* Messages & Notifications */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-header bg-primary text-white">
-                <FaComment className="me-2" />
+            <div className="card mb-4">
+              <div className="card-header bg-primary text-white d-flex align-items-center">
+                <FaBell className="me-2" />
                 Messages & Notifications
               </div>
               <div className="card-body">
@@ -260,11 +234,11 @@ const UserPanel = () => {
                   messages.map((message) => (
                     <div 
                       key={message.id} 
-                      className="alert alert-light d-flex justify-content-between align-items-center"
+                      className="alert alert-light d-flex justify-content-between align-items-center mb-3"
                     >
                       <span>{message.message}</span>
                       {message.type === 'notification' && (
-                        <div>
+                        <div className="d-flex">
                           <button 
                             className="btn btn-success btn-sm me-2" 
                             onClick={message.actions.accept}
@@ -288,9 +262,9 @@ const UserPanel = () => {
             </div>
 
             {/* Jobs Section */}
-            <div className="card shadow-sm">
-              <div className="card-header bg-success text-white">
-                <FaBriefcase className="me-2" />
+            <div className="card">
+              <div className="card-header bg-success text-white d-flex align-items-center">
+                <FaListUl className="me-2" />
                 {userType === 'worker' ? 'Job Offers' : 'Your Posted Jobs'}
               </div>
               <div className="card-body">
@@ -299,12 +273,15 @@ const UserPanel = () => {
                 ) : userType === 'worker' ? (
                   jobOffers.length > 0 ? (
                     jobOffers.map((offer) => (
-                      <div key={offer.id} className="card mb-3 border-light">
+                      <div key={offer.id} className="card mb-3">
                         <div className="card-body">
                           <h5 className="card-title">{offer.role}</h5>
-                          <p className="card-text text-muted">{offer.company}</p>
+                          <p className="card-text text-muted">Company : {offer.company}</p>
                           <p className="card-text">
-                            <strong className="text-success">{offer.salary}</strong>
+                            <strong className="text-success">Salary : {offer.salary}</strong>
+                          </p>
+                          <p className="card-text">
+                            <strong className="text-success">posted by : {offer.posterName}</strong>
                           </p>
                           <button className="btn btn-outline-success">Apply Now</button>
                         </div>
@@ -316,7 +293,7 @@ const UserPanel = () => {
                 ) : (
                   userJobs.length > 0 ? (
                     userJobs.map((job) => (
-                      <div key={job._id} className="card mb-3 border-light">
+                      <div key={job._id} className="card mb-3">
                         <div className="card-body">
                           <h5 className="card-title">{job.title}</h5>
                           <div className="row">
@@ -334,15 +311,15 @@ const UserPanel = () => {
                               </p>
                             </div>
                           </div>
-                          <div className="job-actions mt-3">
+                          <div className="mt-3 d-flex flex-wrap gap-2">
                             <button 
-                              className="btn btn-warning me-2" 
+                              className="btn btn-warning"
                               onClick={() => handleEditJob(job._id)}
                             >
                               <FaEdit className="me-1" /> Edit
                             </button>
                             <button 
-                              className="btn btn-danger" 
+                              className="btn btn-danger"
                               onClick={() => handleDeleteJob(job._id)}
                             >
                               <FaTrashAlt className="me-1" /> Delete

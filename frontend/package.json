@@ -14,6 +14,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "easing": "^1.2.1",
+    "firebase": "^11.2.0",
     "jquery": "^3.7.1",
     "jquery.easing": "^1.4.1",
     "js-cookie": "^3.0.5",
@@ -24,6 +25,7 @@
     "react-owl-carousel": "^2.3.3",
     "react-router-dom": "^7.0.2",
     "react-toastify": "^11.0.2",
+    "recharts": "^2.15.0",
     "sass": "^1.83.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
@@ -36,14 +38,11 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
-    "autoprefixer": "^10.4.20",
     "eslint": "^9.13.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
     "vite": "^5.4.10"
   }
 }

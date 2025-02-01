@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { FaMapMarkerAlt, FaBriefcase, FaDollarSign } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +11,7 @@ function SearchBar() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -41,57 +42,77 @@ function SearchBar() {
   };
 
   const handleViewDetails = (jobId) => {
-    navigate(`/job-details/${jobId}`); // Navigate to the JobDetail page
+    navigate(`/job-details/${jobId}`);
   };
 
   return (
     <div>
       {/* Search Section */}
       <div
-        className="container-fluid bg-primary mb-5 wow fadeIn"
-        data-wow-delay="0.1s"
-        style={{ padding: "40px" }}
+        className="search-bar container-fluid py-4"
+        style={{
+          backgroundColor: "#00B074",
+          color: "white",
+        }}
       >
         <div className="container">
-          <div className="row g-2">
-            <div className="col-md-10">
-              <div className="row g-2">
-                <div className="col-md-4">
-                  <input
-                    type="text"
-                    className="form-control border-0"
-                    placeholder="Job Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <div className="col-md-4">
-                  <select
-                    className="form-select border-0"
-                    value={jobType}
-                    onChange={(e) => setJobType(e.target.value)}
-                  >
-                    <option value="jobType" disabled>
-                      Job Type
-                    </option>
-                    <option value="Full-Time">Full-Time</option>
-                    <option value="Part-Time">Part-Time</option>
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <input
-                    type="text"
-                    className="form-control border-0"
-                    placeholder="Enter PIN Code"
-                    value={pinCode}
-                    onChange={(e) => setPinCode(e.target.value)}
-                  />
-                </div>
-              </div>
+          <div className="row g-3 align-items-center">
+            <div className="col-md-4">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Job Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                style={{
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  border: "none",
+                }}
+              />
+            </div>
+            <div className="col-md-3">
+              <select
+                className="form-select"
+                value={jobType}
+                onChange={(e) => setJobType(e.target.value)}
+                style={{
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  border: "none",
+                }}
+              >
+                <option value="jobType" disabled>
+                  Select Job Type
+                </option>
+                <option value="Full-Time">Full-Time</option>
+                <option value="Part-Time">Part-Time</option>
+              </select>
+            </div>
+            <div className="col-md-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter PIN Code"
+                value={pinCode}
+                onChange={(e) => setPinCode(e.target.value)}
+                style={{
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  border: "none",
+                }}
+              />
             </div>
             <div className="col-md-2">
               <button
-                className="btn btn-dark border-0 w-100"
+                className="btn w-100"
+                style={{
+                  backgroundColor: "white",
+                  color: "#00B074",
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  fontWeight: "bold",
+                }}
                 onClick={handleSearch}
               >
                 Search
@@ -102,32 +123,47 @@ function SearchBar() {
       </div>
 
       {/* Display Search Results */}
-      <div className="container">
+      <div className="container my-5">
         {loading ? (
           <div className="text-center">Loading...</div>
         ) : error ? (
           <p className="text-danger">{error}</p>
         ) : filteredJobs.length > 0 ? (
-          <div className="row g-3">
+          <div className="row g-4">
             {filteredJobs.map((job) => (
               <div className="col-lg-3 col-md-4 col-sm-6" key={job._id}>
                 <div className="small-job-card shadow-sm rounded p-3">
-                  <h5 className="text-primary">{job.title}</h5>
+                  <h5 style={{ color: "#00B074" }}>{job.title}</h5>
                   <p className="mb-1">
-                    <FaMapMarkerAlt className="me-1 text-secondary" />
+                    <FaMapMarkerAlt
+                      className="me-1"
+                      style={{ color: "#888" }}
+                    />
                     {job.location}
                   </p>
                   <p className="mb-1">
-                    <FaBriefcase className="me-1 text-secondary" />
+                    <FaBriefcase
+                      className="me-1"
+                      style={{ color: "#888" }}
+                    />
                     {job.jobType}
                   </p>
                   <p className="mb-1">
-                    <FaDollarSign className="me-1 text-secondary" />
+                    <FaDollarSign
+                      className="me-1"
+                      style={{ color: "#888" }}
+                    />
                     {job.salary}
                   </p>
                   <button
-                    className="btn btn-outline-primary btn-sm mt-2 w-100"
-                    onClick={() => handleViewDetails(job._id)} // Navigate on click
+                    className="btn btn-sm mt-2 w-100"
+                    style={{
+                      border: `1px solid #00B074`,
+                      backgroundColor: "white",
+                      color: "#00B074",
+                      fontWeight: "bold",
+                    }}
+                    onClick={() => handleViewDetails(job._id)}
                   >
                     View Details
                   </button>
@@ -136,7 +172,8 @@ function SearchBar() {
             ))}
           </div>
         ) : (
-          <p></p>
+          <p className="text-center text-muted">
+          </p>
         )}
       </div>
     </div>

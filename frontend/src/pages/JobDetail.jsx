@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import BreadCrumbs from '../components/BreadCrumbs';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Chat from '../components/Chat';
+import Chat from '../components/Chat/Chat';
 
 const JobDetail = () => {
   const { jobId } = useParams();
@@ -101,8 +101,10 @@ const JobDetail = () => {
               fontFamily: "'Montserrat', sans-serif",
             }}
           >
-            <h1 className="fw-bold mb-0">{job.title}</h1>
+            <h1 className="fw-bold mb-0">Job Poster : {job.title.charAt(0).toUpperCase() + job.title.slice(1)}</h1>
             <p className="fs-5 mt-2">{job.company}</p>
+            <p className="fs-5 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
+
           </div>
 
           {/* Body */}

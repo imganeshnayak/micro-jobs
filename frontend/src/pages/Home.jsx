@@ -45,7 +45,6 @@ function Home() {
 
 
     {/* Testimonial Start */}
-    <Testimonial/>
     {/* Testimonial End */}
     
 

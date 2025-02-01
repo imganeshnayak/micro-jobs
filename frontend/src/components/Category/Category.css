@@ -19,6 +19,14 @@
   animation: glowing-border-animation 1.5s infinite;
   z-index: -1;
 }
+.text-primary {
+  color: #28a745; /* Green color */
+}
+
+.btn-primary {
+  background-color: #28a745; /* Green color */
+  border-color: #28a745;
+}
 
 .cat-item.glowing-border:hover {
   transform: translateY(-10px);

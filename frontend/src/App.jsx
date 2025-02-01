@@ -9,11 +9,17 @@ import Login from "./pages/Login";
 import UserPanel from './components/UserPanel/UserPanel';
 import PostJob from './pages/job/PostJob';
 import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
-import ChatList from './components/ChatList'
+import ChatList from './components/Chat/ChatList'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatPage from './pages/ChatPage';
-
+import UserDetails from './pages/UserDetails';
+import Rating from './pages/Rating'
+import AdminDashboard from './pages/admin/AdminDashboard';
+import Service from './pages/job/Service';
+import DisplayService from './components/DIsplayService';
+import ServiceDetails from './components/ServiceDetail';
+import UserProfile from "./pages/UserProfile";
 
 
 
@@ -31,6 +37,13 @@ function App() {
           <Route path="/job-list" element={<JobList />} />
           <Route path="/job-category" element={<JobCategory />} />
           <Route path="/chatlist" element={<ChatList />} />
+          <Route path="/user-details" element={<UserDetails />} />
+          <Route path="/rate/:userId" element={<Rating />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path='/service-post' element={<Service />} key='service'/>
+          <Route path="/services" element={<DisplayService />} />
+          <Route path="/service-details/:serviceId" element={<ServiceDetails />} />
+          <Route path="/user-profile/:userId" element={<UserProfile />} />
 
           {/* Protected Routes */}
           <Route

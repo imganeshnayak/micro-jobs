@@ -5,6 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { auth, googleProvider, signInWithPopup } from "../firebase.js";
+
+
 
 const Login3D = () => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -13,6 +16,7 @@ const Login3D = () => {
     email: "",
     password: "",
     userType: "worker",
+    
   });
   const navigate = useNavigate();
 
@@ -51,6 +55,20 @@ const Login3D = () => {
       toast.error(error.response?.data?.message || "Registration failed");
     }
   };
+
+const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const token = await result.user.getIdToken(); // Get Firebase Token
+
+    // Send token to backend
+    const response = await axios.post("http://localhost:5000/firebase-login", { token });
+    handleLoginSuccess(response.data);
+  } catch (error) {
+    console.error("Google login failed:", error);
+    toast.error("Google login failed. Please try again.");
+  }
+};
 
   const handleLoginSuccess = (data) => {
     localStorage.setItem('jwtToken', data.token);
@@ -106,7 +124,7 @@ const Login3D = () => {
       {/* Left side: Animated GIF */}
       <div className="left-side">
         <img
-          src="/assets/img/login.gif"
+          src="https://res.cloudinary.com/dahotkqpi/image/upload/v1738249853/6325230_k7llop.jpg"
           alt="Animated Graphic"
         />
       </div>
@@ -227,6 +245,10 @@ const Login3D = () => {
                     Sign In Instead
                   </a>
                 </div>
+                <button onClick={handleGoogleLogin} className="btn3d google-btn">
+  Sign in with Google
+</button>
+
                 <button type="submit" className="btn3d">Register</button>
               </form>
             </div>
