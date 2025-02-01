@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import BreadCrumbs from '../components/BreadCrumbs';
 import Category from '../components/Category/Category'
 
+import SearchBar from '../components/SerachBar'
 
 
 function JobCategory() {
@@ -15,6 +16,7 @@ function JobCategory() {
 <BreadCrumbs
 title="Category"
 />
+<SearchBar/>
 <Category/>
 
 <Footer/>

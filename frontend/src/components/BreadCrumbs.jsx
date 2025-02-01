@@ -11,10 +11,10 @@ function BreadCrumbs({ title }) {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb text-uppercase">
               <li className="breadcrumb-item">
-                <a href="/">Home</a>
+                <a href="/" style={{ color: "#00B074" }}>Home</a>
               </li>
               <li className="breadcrumb-item">
-                <a href="#">Pages</a>
+                <a href="#" style={{ color: "#00B074" }}>Pages</a>
               </li>
               <li
                 className="breadcrumb-item text-white active"

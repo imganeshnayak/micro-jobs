@@ -1,0 +1,30 @@
+{
+  "name": "socket.io-redis",
+  "version": "5.4.0",
+  "description": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:socketio/socket.io-redis.git"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "debug": "~4.1.0",
+    "notepack.io": "~2.2.0",
+    "redis": "^3.0.0",
+    "socket.io-adapter": "~1.1.0",
+    "uid2": "0.0.3"
+  },
+  "devDependencies": {
+    "expect.js": "0.3.1",
+    "ioredis": "^4.0.0",
+    "mocha": "^3.4.2",
+    "socket.io": "latest",
+    "socket.io-client": "latest"
+  }
+}

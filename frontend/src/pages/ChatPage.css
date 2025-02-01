@@ -1,0 +1,65 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Chat Page Container */
+  .chat-page-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f4f4f9;
+  }
+  
+  /* Chat List Container */
+  .chat-list-container {
+    flex: 1 1 30%; /* Take 30% of the available space */
+    border-right: 1px solid #ccc; /* Divider between chat list and chat */
+    overflow-y: auto; /* Scroll if the list is long */
+    background-color: #ffffff; /* White background for the chat list */
+    transition: transform 0.3s ease-in-out; /* Smooth transition for mobile view */
+  }
+  
+  /* Chat Interface Container */
+  .chat-interface-container {
+    flex: 1 1 70%; /* Take 70% of the available space */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent scrollbars unless required */
+    background-color: #f4f4f9; /* Light background for the chat interface */
+    transition: transform 0.3s ease-in-out; /* Smooth transition for mobile view */
+  }
+  
+  /* No Chat Selected Message */
+  .no-chat-selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Take up the remaining space */
+    font-size: 16px;
+    color: #777;
+  }
+  
+  /* Mobile View */
+  @media (max-width: 768px) {
+    .chat-list-container {
+      flex: 1 1 100%; /* Take full width on mobile */
+    }
+  
+    .chat-interface-container {
+      flex: 1 1 100%; /* Take full width on mobile */
+    }
+  
+    .hidden {
+      display: none; /* Hide the container in mobile view */
+    }
+  
+    .chat-list-container.hidden {
+      transform: translateX(-100%); /* Slide out the chat list */
+    }
+  
+    .chat-interface-container.hidden {
+      transform: translateX(100%); /* Slide out the chat interface */
+    }
+  }

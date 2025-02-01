@@ -3,23 +3,28 @@ import mongoose from 'mongoose';
 const jobSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   description: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   company: {
     type: String,
-    required: true
+    required: false,
   },
   location: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    match: /^[a-zA-Z0-9\s,.'-]{3,}$/ // Ensure it's at least 3 characters long
   },
   salary: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   pincode: {
     type: String,
@@ -32,11 +37,13 @@ const jobSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   category: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   email: {
     type: String,
@@ -51,6 +58,11 @@ const jobSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 

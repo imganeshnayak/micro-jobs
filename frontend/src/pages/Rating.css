@@ -1,0 +1,29 @@
+.rating-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .rating-stars {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .star {
+    font-size: 24px;
+    color: #cccccc;
+    cursor: pointer;
+  }
+  
+  .star.active {
+    color: #ffcc00;
+  }
+  
+  .error {
+    color: #dc3545;
+    margin-bottom: 16px;
+  }
