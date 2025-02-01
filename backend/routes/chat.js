@@ -4,7 +4,6 @@ import Chat from '../models/Chat.js';
 import Notification from '../models/Notification.js';
 import { io } from '../server.js';
 import ChatRoom from '../models/chatRoom.js';
-import Message from '../models/message.js';
 
 const router = express.Router();
 

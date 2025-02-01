@@ -78,19 +78,6 @@ router.get('/jobs/:jobId', async (req, res) => {
   }
 });
 
-// routes/jobRoutes.js
-// router.get('/jobs/:id', async (req, res) => {
-//   try {
-//     const job = await Job.findById(req.params.id)
-//                         .select('title description company location salary pincode posterName state category email jobType userId');
-//     if (!job) {
-//       return res.status(404).json({ message: 'Job not found' });
-//     }
-//     res.json(job);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
 
 
 // Update a job
@@ -180,5 +167,18 @@ router.delete('/:id', async (req, res) => {
     });
   }
 });
+
+
+router.get('/jobs/suggestions', async (req, res) => {
+  try {
+    const { pincode } = req.query;
+    const jobs = await Job.find({ pincode }); // Fetch jobs with matching pincode
+    res.json(jobs);
+  } catch (error) {
+    console.error('Error fetching suggested jobs:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 export default router;
