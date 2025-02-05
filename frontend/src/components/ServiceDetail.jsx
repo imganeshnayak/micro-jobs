@@ -11,12 +11,14 @@ const ServiceDetails = () => {
   const { serviceId } = useParams(); // Get serviceId from the route
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchServiceDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/services/${serviceId}`);
+        const response = await axios.get(`${API_BASE_URL}/services/${serviceId}`);
         setService(response.data);
       } catch (error) {
         toast.error("Failed to fetch service details");

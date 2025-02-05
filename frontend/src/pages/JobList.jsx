@@ -18,12 +18,14 @@ const JobList = () => {
   const [searchLocation, setSearchLocation] = useState(''); // Search by location
   const [searchCategory, setSearchCategory] = useState(''); // Search by category
   const jobsPerPage = 10; // Show 10 jobs per page
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/jobs');
+        const response = await axios.get(`${API_BASE_URL}/jobs`);
         setJobs(response.data);
         setFilteredJobs(response.data); // Initialize filteredJobs
       } catch (error) {

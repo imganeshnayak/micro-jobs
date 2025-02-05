@@ -17,12 +17,15 @@ const DisplayService = () => {
   const [searchCategory, setSearchCategory] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const servicesPerPage = 10; // Show 10 services per page
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/services");
+        const response = await axios.get(`${API_BASE_URL}/services`);
         setServices(response.data);
         setFilteredServices(response.data); // Initialize filteredServices
       } catch (error) {

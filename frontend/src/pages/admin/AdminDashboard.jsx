@@ -10,8 +10,8 @@ export default function AdminDashboard() {
     // Fetch jobs and users data from the backend
     const fetchAdminData = async () => {
       try {
-        const jobsResponse = await axios.get('http://localhost:5000/admin/jobs');
-        const usersResponse = await axios.get('http://localhost:5000/admin/users');
+        const jobsResponse = await axios.get('${API_BASE_URL}/admin/jobs');
+        const usersResponse = await axios.get('${API_BASE_URL}/admin/users');
         setJobs(jobsResponse.data || []);
         setUsers(usersResponse.data || []);
       } catch (error) {
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
   // Delete job function
   async function handleDeleteJob(jobId) {
     try {
-      await axios.delete(`http://localhost:5000/admin/jobs/${jobId}`);
+      await axios.delete(`${API_BASE_URL}/admin/jobs/${jobId}`);
       setJobs(jobs.filter(job => job._id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
   // Delete user function
   async function handleDeleteUser(userId) {
     try {
-      await axios.delete(`http://localhost:5000/admin/users/${userId}`);
+      await axios.delete(`${API_BASE_URL}/admin/users/${userId}`);
       setUsers(users.filter(user => user._id !== userId));
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -195,8 +195,8 @@ export default function AdminDashboard() {
 //     // Fetch jobs and users data from the backend
 //     const fetchAdminData = async () => {
 //       try {
-//         const jobsResponse = await axios.get('http://localhost:5000/admin/jobs');
-//         const usersResponse = await axios.get('http://localhost:5000/admin/users');
+//         const jobsResponse = await axios.get('${API_BASE_URL}/admin/jobs');
+//         const usersResponse = await axios.get('${API_BASE_URL}/admin/users');
 //         setJobs(jobsResponse.data || []);
 //         setUsers(usersResponse.data || []);
 //       } catch (error) {
@@ -368,7 +368,7 @@ export default function AdminDashboard() {
 //   // Delete job function
 //   async function handleDeleteJob(jobId) {
 //     try {
-//       await axios.delete(`http://localhost:5000/admin/jobs/${jobId}`);
+//       await axios.delete(`${API_BASE_URL}/admin/jobs/${jobId}`);
 //       setJobs(jobs.filter((job) => job._id !== jobId));
 //     } catch (error) {
 //       console.error('Error deleting job:', error.message);
@@ -389,8 +389,8 @@ export default function AdminDashboard() {
 //     // Fetch jobs and users data from the backend
 //     const fetchAdminData = async () => {
 //       try {
-//         const jobsResponse = await axios.get('http://localhost:5000/admin/jobs');
-//         const usersResponse = await axios.get('http://localhost:5000/admin/users');
+//         const jobsResponse = await axios.get('${API_BASE_URL}/admin/jobs');
+//         const usersResponse = await axios.get('${API_BASE_URL}/admin/users');
 //         setJobs(jobsResponse.data || []);
 //         setUsers(usersResponse.data || []);
 //       } catch (error) {
@@ -564,7 +564,7 @@ export default function AdminDashboard() {
 //   // Delete job function
 //   async function handleDeleteJob(jobId) {
 //     try {
-//       await axios.delete(`http://localhost:5000/admin/jobs/${jobId}`);
+//       await axios.delete(`${API_BASE_URL}/admin/jobs/${jobId}`);
 //       setJobs(jobs.filter((job) => job._id !== jobId));
 //     } catch (error) {
 //       console.error('Error deleting job:', error.message);

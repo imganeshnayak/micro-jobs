@@ -16,6 +16,8 @@ const JobDetail = () => {
   const [error, setError] = useState(null);
   const [chatRoomId, setChatRoomId] = useState(null);
   const [jobPosterId, setJobPosterId] = useState(null);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   const userId = JSON.parse(localStorage.getItem('user'))?._id;
@@ -23,7 +25,7 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/jobs/jobs/${jobId}`);
+        const response = await axios.get(`${API_BASE_URL}/jobs/jobs/${jobId}`);
         setJob(response.data);
       } catch (error) {
         setError('Failed to fetch job details. Please try again later.');
@@ -44,7 +46,7 @@ const JobDetail = () => {
 
   const handleMessageClick = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/chat/rooms', {
+      const response = await axios.post(`${API_BASE_URL}/chat/rooms`, {
         senderId: userId,
         receiverId: jobPosterId,
       });
@@ -55,7 +57,7 @@ const JobDetail = () => {
       }
 
       // Send notification with chat room ID
-      await axios.post('http://localhost:5000/chat/send', {
+      await axios.post(`${API_BASE_URL}/chat/send`, {
         receiverId: jobPosterId,
         senderId: userId,
         message: 'New job application received',

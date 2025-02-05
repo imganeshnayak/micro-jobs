@@ -22,8 +22,7 @@ function SearchBar() {
       if (jobType !== "jobType") query.append("jobType", jobType);
       if (pinCode) query.append("pinCode", pinCode);
 
-      const response = await fetch(
-        `http://localhost:5000/search/search?${query.toString()}`
+      const response = await fetch(`${API_BASE_URL}/search/search?${query.toString()}`
       );
       if (!response.ok) throw new Error("Failed to fetch jobs");
 

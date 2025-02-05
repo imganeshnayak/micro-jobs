@@ -33,6 +33,7 @@ const CATEGORIES = [
   "Travel"
 ];
 const PostJob = () => {
+
     const navigate = useNavigate();
   
   const [jobData, setJobData] = useState({
@@ -66,11 +67,12 @@ const PostJob = () => {
     });
   };
   
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/jobs', jobData);
+      const response = await axios.post(`${API_BASE_URL}/jobs`, jobData);
       toast.success(response.data.message); // Show success toast
       
       // Reset the form

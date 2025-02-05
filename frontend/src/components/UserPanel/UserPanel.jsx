@@ -27,6 +27,9 @@ const UserPanel = () => {
   const userName = user.fullName || "User Name";
   const userEmail = user.email || "user@example.com";
   const pfp = user.profilePicture || "";
+  console.log(pfp);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   const toggleUserType = () => {
@@ -50,7 +53,7 @@ const UserPanel = () => {
 
         // Fetch notifications
         const notificationsResponse = await axios.get(
-          `http://localhost:5000/notifications/${userId}`
+          `${API_BASE_URL}/notifications/${userId}`
         );
 
         // Fetch user jobs or job offers
@@ -84,7 +87,7 @@ const UserPanel = () => {
 
   const fetchUserJobs = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/jobs/user/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/jobs/user/${userId}`);
       setUserJobs(response.data);
       setLoading(false);
     } catch (error) {
@@ -97,7 +100,7 @@ const UserPanel = () => {
       setLoading(true);
       
       const userPincode = user.pincode;
-      const response = await axios.get(`http://localhost:5000/jobs?pincode=${userPincode}`);
+      const response = await axios.get(`${API_BASE_URL}/jobs?pincode=${userPincode}`);
       
       // Limit job offers to 3 or 4
       const jobData = response.data.slice(0, 4); // Change to `.slice(0, 3)` if you only want 3 jobs
@@ -113,7 +116,7 @@ const UserPanel = () => {
 
   const handleDeleteJob = async (jobId) => {
     try {
-      await axios.delete(`http://localhost:5000/jobs/${jobId}`);
+      await axios.delete(`${API_BASE_URL}/jobs/${jobId}`);
       setUserJobs(userJobs.filter((job) => job._id !== jobId));
       alert('Job deleted successfully');
     } catch (error) {
@@ -124,7 +127,7 @@ const UserPanel = () => {
   const handleAccept = async () => {
     try {
       const notificationsResponse = await axios.get(
-        `http://localhost:5000/notifications/${userId}`
+        `${API_BASE_URL}/notifications/${userId}`
       );
       const notifications = notificationsResponse.data;
       const notification = notifications[0];
@@ -136,7 +139,7 @@ const UserPanel = () => {
       }
 
       const chatRoomResponse = await axios.get(
-        `http://localhost:5000/chat/${chatRoomId}`
+        `${API_BASE_URL}/chat/${chatRoomId}`
       );
 
       const { senderId, receiverId } = chatRoomResponse.data;
@@ -154,7 +157,7 @@ const UserPanel = () => {
 
   const handleDelete = async (notificationId) => {
     try {
-      await axios.delete(`http://localhost:5000/notifications/${notificationId}`);
+      await axios.delete(`${API_BASE_URL}/notifications/${notificationId}`);
       setMessages(prevMessages => 
         prevMessages.filter(message => message.id !== notificationId)
       );

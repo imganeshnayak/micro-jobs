@@ -11,11 +11,12 @@ const UserProfile = () => {
   const { userId } = useParams(); // Get userId from the route
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/user/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
         setUser(response.data);
       } catch (error) {
         toast.error("Failed to fetch user details");

@@ -5,7 +5,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000'); // Connect to the Socket.IO server
 
 const Chat = ({ chatRoomId, senderId, receiverId, receiverName }) => {
   const [messages, setMessages] = useState([]);
@@ -15,6 +14,10 @@ const Chat = ({ chatRoomId, senderId, receiverId, receiverName }) => {
   const [chatName, setChatName] = useState(receiverName || 'Chat');
   const [isRenaming, setIsRenaming] = useState(false);
   const messagesEndRef = useRef(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const socket = io(`${import.meta.env.VITE_API_BASE_URL}`);
+
   const navigate = useNavigate();
 
   const scrollToBottom = () => {
@@ -27,7 +30,7 @@ const Chat = ({ chatRoomId, senderId, receiverId, receiverName }) => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:5000/chat/${chatRoomId}/messages`
+          `${API_BASE_URL}/chat/${chatRoomId}/messages`
         );
         const data = await response.json();
         setMessages(data);

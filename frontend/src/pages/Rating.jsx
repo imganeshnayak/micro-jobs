@@ -24,7 +24,7 @@ const Rating = ({ userId }) => { // Ensure userId is passed as a prop
         throw new Error("User ID is undefined");
       }
 
-      const response = await axios.post(`http://localhost:5000/user/${userId}/rate`, {
+      const response = await axios.post(`${API_BASE_URL}/user/${userId}/rate`, {
         rating,
         raterId,
       });

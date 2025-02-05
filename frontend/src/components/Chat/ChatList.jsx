@@ -19,7 +19,7 @@
 //   useEffect(() => {
 //     const fetchChatRooms = async () => {
 //       try {
-//         const response = await axios.get(`http://localhost:5000/chat/user/${userId}/rooms`);
+//         const response = await axios.get(`${API_BASE_URL}/chat/user/${userId}/rooms`);
 //         const enrichedRooms = response.data.map((room) => {
 //           const otherParticipant = room.participants.find(
 //             (participant) => participant._id !== userId
@@ -115,13 +115,14 @@ const ChatList = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userId = user._id;
   const userProfilePic = user.profilePicture || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/chat/user/${userId}/rooms`);
+        const response = await axios.get(`${API_BASE_URL}/chat/user/${userId}/rooms`);
         const enrichedRooms = response.data.map((room) => {
           const otherParticipant = room.participants.find(
             (participant) => participant._id !== userId

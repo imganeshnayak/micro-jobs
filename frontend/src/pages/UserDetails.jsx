@@ -21,7 +21,7 @@
 //   useEffect(() => {
 //     const fetchUserDetails = async () => {
 //       try {
-//         const response = await axios.get(`http://localhost:5000/user/${userId}`);
+//         const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
 //         setUser(response.data);
 //         setPreview(response.data.profilePicture); // Set existing profile picture as preview
 //       } catch (error) {
@@ -70,7 +70,7 @@
 
 //       try {
 //         const uploadResponse = await axios.post(
-//           "http://localhost:5000/upload", // Your backend upload endpoint
+//           "${API_BASE_URL}/upload", // Your backend upload endpoint
 //           formData,
 //           {
 //             headers: {
@@ -89,7 +89,7 @@
 
 //     // Update user details with the new profile picture URL
 //     try {
-//       await axios.put(`http://localhost:5000/user/${userId}`, {
+//       await axios.put(`${API_BASE_URL}/user/${userId}`, {
 //         ...user,
 //         profilePicture: profileImageUrl,
 //       });
@@ -191,12 +191,14 @@ const UserDetails = () => {
   const [preview, setPreview] = useState(null);
 
   const userId = JSON.parse(localStorage.getItem("user"))._id;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/user/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
         setUser(response.data);
         setPreview(response.data.profilePicture); // Set existing profile picture as preview
       } catch (error) {
@@ -249,7 +251,7 @@ const UserDetails = () => {
 
       try {
         const uploadResponse = await axios.post(
-          "http://localhost:5000/upload", // Your backend upload endpoint
+          `${API_BASE_URL}/upload`, // Your backend upload endpoint
           formData,
           {
             headers: {
@@ -268,7 +270,7 @@ const UserDetails = () => {
 
     // Update user details with the new profile picture URL
     try {
-      await axios.put(`http://localhost:5000/user/${userId}`, {
+      await axios.put(`${API_BASE_URL}/user/${userId}`, {
         ...user,
         profilePicture: profileImageUrl,
       });

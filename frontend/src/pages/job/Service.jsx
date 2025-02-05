@@ -55,7 +55,7 @@ const PostService = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/services', serviceData);
+      const response = await axios.post('${API_BASE_URL}/services', serviceData);
       toast.success(response.data.message);
 
       // Reset the form

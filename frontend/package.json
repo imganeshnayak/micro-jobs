@@ -13,6 +13,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "dotenv": "^16.4.7",
     "easing": "^1.2.1",
     "firebase": "^11.2.0",
     "jquery": "^3.7.1",
