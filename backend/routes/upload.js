@@ -29,7 +29,7 @@ router.post("/", upload.single("file"), (req, res) => {
     }
 
     // Return the file URL
-    const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    const fileUrl = `${API_BASE_URL}/uploads/${req.file.filename}`;
     res.status(200).json({ imageUrl: fileUrl });
   } catch (error) {
     console.error("Error uploading file:", error);
